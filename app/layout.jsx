@@ -1,18 +1,24 @@
-ReactQueryProvider
-import './../styles/globals.css'; 
-import { Inter } from 'next/font/google';
-import ReactQueryProvider from '@/lib/providers/ReactQueryProvider'; // Adjust path based on your jsconfig.json alias
+import { Inter } from "next/font/google"
+import '../styles/globals.css'
+import { Providers } from "@/providers/Providers"
+import { Toaster } from "sonner"
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] })
+
+export const metadata = {
+  title: "হোমিওপ্যাথিক ক্লিনিক ম্যানেজমেন্ট সিস্টেম",
+  description: "আধুনিক হোমিওপ্যাথিক ক্লিনিক ব্যবস্থাপনার জন্য একটি সম্পূর্ণ সমাধান",
+}
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="bn" suppressHydrationWarning>
       <body className={inter.className}>
-        <ReactQueryProvider>
+        <Providers>
           {children}
-        </ReactQueryProvider>
+          <Toaster />
+        </Providers>
       </body>
     </html>
-  );
+  )
 }
