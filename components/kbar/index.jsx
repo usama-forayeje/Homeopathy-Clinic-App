@@ -23,7 +23,6 @@ export default function KBar({ children }) {
         };
 
         return navItems.flatMap((navItem) => {
-            // Only include base action if the navItem has a real URL and is not just a container
             const baseAction =
                 navItem.url !== '#'
                     ? {

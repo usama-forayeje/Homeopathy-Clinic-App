@@ -17,13 +17,13 @@ function setThemeCookie(theme) {
     document.cookie = `${COOKIE_NAME}=${theme}; path=/; max-age=31536000; SameSite=Lax; ${window.location.protocol === 'https:' ? 'Secure;' : ''}`;
 }
 
-const ThemeContext = createContext < ThemeContextType | undefined > (undefined);
+const ThemeContext = createContext(undefined);
 
 export function ActiveThemeProvider({
     children,
     initialTheme
 }) {
-    const [activeTheme, setActiveTheme] = useState < string > (
+    const [activeTheme, setActiveTheme] = useState(
         () => initialTheme || DEFAULT_THEME
     );
 

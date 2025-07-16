@@ -1,10 +1,12 @@
-"use client"
+// providers/Providers.jsx
+"use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { ThemeProvider } from "@/providers/ThemeProvider"
-import { AuthProvider } from "@/providers/AuthProvider"
-import { useState } from "react"
+import React, { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "@/providers/ThemeProvider"; // Your ThemeProvider
+import { AuthProvider } from "@/providers/AuthProvider"; // Your AuthProvider
+import { SidebarProvider } from "@/lib/providers/SidebarProvider"; // New: Import SidebarProvider
 
 export function Providers({ children }) {
   const [queryClient] = useState(
@@ -18,15 +20,19 @@ export function Providers({ children }) {
             retry: 1,
           },
         },
-      }),
-  )
+      })
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
+        </AuthProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  )
+  );
 }
