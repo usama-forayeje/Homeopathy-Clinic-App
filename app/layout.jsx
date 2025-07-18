@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import { Providers } from "@/providers/Providers";
 import { Toaster } from "sonner";
 import React from 'react';
+import { SidebarProvider } from "@/lib/providers/SidebarProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,9 @@ export default function RootLayout({ children }) {
     <html lang="bn" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          {children}
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
           <Toaster />
         </Providers>
       </body>
