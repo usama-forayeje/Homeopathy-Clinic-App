@@ -1,19 +1,9 @@
-import * as React from "react"
-
-const MOBILE_BREAKPOINT = 768
+// hooks/use-mobile.js
+import React from "react";
+import { useMediaQuery } from "react-responsive";
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState(undefined)
-
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange);
-  }, [])
-
-  return !!isMobile
+  // এটি স্ক্রিনের প্রস্থ 767 পিক্সেলের কম হলে 'true' রিটার্ন করবে, যা মোবাইল ডিভাইস নির্দেশ করে।
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  return isMobile;
 }

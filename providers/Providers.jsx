@@ -4,9 +4,9 @@
 import React, { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ThemeProvider } from "@/providers/ThemeProvider"; // Your ThemeProvider
 import { AuthProvider } from "@/providers/AuthProvider"; // Your AuthProvider
-import { SidebarProvider } from "@/lib/providers/SidebarProvider"; // New: Import SidebarProvider
+import { SidebarProvider } from "@/lib/providers/SidebarProvider";
+import ThemeProvider from "@/components/common/theme-provider";
 
 export function Providers({ children }) {
   const [queryClient] = useState(

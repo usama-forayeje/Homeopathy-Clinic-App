@@ -1,9 +1,7 @@
-// components/layout/UserNav.jsx
-"use client";
+"use client"
 
-import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,41 +9,24 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-// import { useAuth } from "@/providers/AuthProvider"; // আপনার AuthProvider থেকে useAuth ইম্পোর্ট করুন
+} from "@/components/ui/dropdown-menu"
+import { useAuth } from "@/providers/AuthProvider"
+import { User, Settings, LogOut, CreditCard, Bell } from "lucide-react"
+import Link from "next/link"
 
 export function UserNav() {
-  // const { user, logout } = useAuth(); // Auth context থেকে ইউজার এবং লগআউট ফাংশন
+  const { user, logout } = useAuth()
 
-  // ডেমো ডেটা, আপনার AuthProvider থেকে আসল ডেটা আসবে
-  const user = {
-    name: "Dr. Rahim",
-    email: "dr.rahim@example.com",
-    // image: "/path/to/user-image.jpg"
-  };
-
-  const handleLogout = () => {
-    // logout(); // আপনার আসল লগআউট ফাংশন কল করুন
-    console.log("User logged out");
-    // রিডাইরেক্ট করুন লগইন পেজে
-    window.location.href = '/auth/login';
-  };
-
-  if (!user) {
-    return null;
-  }
-
-  const userInitials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'DR';
+  if (!user) return null
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-9 w-9">
-            {user.image && <AvatarImage src={user.image} alt={user.name} />}
-            <AvatarFallback>{userInitials}</AvatarFallback>
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user.prefs?.avatar || "/placeholder.svg"} alt={user.name} />
+            <AvatarFallback>{user.name?.charAt(0)?.toUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -58,21 +39,37 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/profile">
+              <User className="mr-2 h-4 w-4" />
+              <span>প্রোফাইল</span>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/billing">
+              <CreditCard className="mr-2 h-4 w-4" />
+              <span>বিলিং</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/settings">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>সেটিংস</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/notifications">
+              <Bell className="mr-2 h-4 w-4" />
+              <span>নোটিফিকেশন</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout}>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        <DropdownMenuItem onClick={logout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>লগ আউট</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

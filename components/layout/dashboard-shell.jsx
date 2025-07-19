@@ -1,17 +1,17 @@
-// components/layout/dashboard-shell.jsx
-"use client"; // এটি একটি ক্লায়েন্ট কম্পোনেন্ট
+
+"use client";
 
 import React from 'react';
-import { useSidebar } from '@/lib/providers/SidebarProvider'; // Sidebar Context থেকে
-import { Header } from '@/components/layout/Header'; // আপনার হেডার কম্পোনেন্ট
-import { cn } from '@/lib/utils'; // cn ইউটিলিটি
-import { Sidebar } from './Sidebar';
+import { useSidebar } from '@/lib/providers/SidebarProvider';
+import { cn } from '@/lib/utils';
+import { Header } from './Header';
+import { Sidebar } from '../ui/sidebar';
+
 
 export function DashboardShell({ children, defaultSidebarOpen }) {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
 
-  // যদি defaultSidebarOpen সেট করা থাকে, তাহলে প্রাথমিক অবস্থায় সেটি ব্যবহার করুন।
-  // useEffect ব্যবহার করে ক্লায়েন্ট-সাইডে স্টেট সিঙ্ক করা
+  // defaultSidebarOpen ভ্যালু ব্যবহার করে সাইডবারের প্রাথমিক অবস্থা সেট করুন
   React.useEffect(() => {
     if (defaultSidebarOpen !== undefined) {
       setSidebarOpen(defaultSidebarOpen);
@@ -19,8 +19,8 @@ export function DashboardShell({ children, defaultSidebarOpen }) {
   }, [defaultSidebarOpen, setSidebarOpen]);
 
   return (
-    <div className="flex min-h-screen">
-      {/* বাম সাইডবার */}
+    <div className="flex min-h-screen bg-background">
+      {/* বাম সাইডবার - এটি DashboardShell এর মধ্যেই থাকবে */}
       <Sidebar />
 
       {/* মূল কন্টেন্ট এরিয়া */}
@@ -30,7 +30,7 @@ export function DashboardShell({ children, defaultSidebarOpen }) {
           sidebarOpen ? "lg:ml-64" : "lg:ml-16" // সাইডবার খোলা বা বন্ধের উপর ভিত্তি করে মার্জিন
         )}
       >
-        {/* হেডার */}
+        {/* হেডার - এটিও DashboardShell এর মধ্যেই থাকবে */}
         <Header />
 
         {/* পেজের কন্টেন্ট */}

@@ -1,59 +1,39 @@
-"use client";
+"use client"
+import { useAuth } from "@/providers/AuthProvider"
+import { useTheme } from "next-themes"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { Separator } from "@/components/ui/separator"
+import { Breadcrumbs } from "@/components/common/Breadcrumbs"
+import { SearchInput } from "@/components/common/SearchInput"
+import { UserNav } from "./UserNav"
+import { NotificationBell } from "@/components/common/NotificationBell"
+import { ThemeSelector } from "../ui/theme-selector"
+import { ModeToggle } from "../common/theme-toggle"
 
-import React from "react";
-import { useSidebar } from "@/lib/providers/SidebarProvider";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
-import { UserNav } from "@/components/layout/UserNav";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { Search, Menu } from "lucide-react"; // Menu আইকন যোগ করা হয়েছে
-import { CommandMenu } from "@/components/command-menu"; // CommandMenu
-import Link from "next/link";
-
-export function Header() {
-  const { setSidebarOpen } = useSidebar();
+export function Header({ setSidebarOpen }) {
+  const { user, logout } = useAuth()
+  const { theme, setTheme } = useTheme()
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center px-4 md:px-6">
-        {/* মোবাইল সাইডবার ট্রিগার */}
-        <Sheet onOpenChange={setSidebarOpen}>
-          <SheetTrigger asChild className="lg:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0">
-            {/* এখানে আপনার মোবাইল Sidebar কম্পোনেন্ট বসবে */}
-            <h2 className="text-xl font-semibold p-4 border-b">ক্লিনিক অ্যাপ</h2>
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4 mt-4">
-              <Link href="/dashboard" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">ড্যাশবোর্ড</Link>
-              <Link href="/dashboard/patients" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">রোগী</Link>
-              <Link href="/dashboard/consultations" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">পরামর্শ</Link>
-              <Link href="/dashboard/medicines" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">ঔষধ</Link>
-              <Link href="/dashboard/diseases" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">রোগ</Link>
-              <Link href="/dashboard/appointments" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">অ্যাপয়েন্টমেন্ট</Link>
-              <Link href="/dashboard/settings" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">সেটিংস</Link>
-            </nav>
-          </SheetContent>
-        </Sheet>
+    <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+      {/* বাম পাশের অংশ: সাইডবার ট্রিগার, সেপারেটর, ব্রেডক্রাম্বস */}
+      <div className="flex items-center gap-2 px-4">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Breadcrumbs />
+      </div>
 
-        {/* সার্চ বার / কীবোর্ড শর্টকাট ট্রিগার */}
-        <div className="ml-auto flex items-center gap-4">
-          <CommandMenu /> {/* KBar/cmdk based search */}
-          {/* অথবা আপনি যদি একটি সাধারণ সার্চ ইনপুট চান: */}
-          {/* <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-            <Input type="search" placeholder="Search..." className="w-full pl-9" />
-          </div> */}
-
-          {/* থিম টগল */}
-          <ThemeToggle />
-
-          {/* ইউজার প্রোফাইল ড্রপডাউন */}
-          <UserNav />
+      <div className="flex flex-1 items-center justify-end gap-2 px-4">
+        <div className="hidden md:flex">
+          <SearchInput />
         </div>
+        <NotificationBell />
+
+        <UserNav user={user} logout={logout} />
+
+        <ModeToggle />
+
+        <ThemeSelector />
       </div>
     </header>
   );
