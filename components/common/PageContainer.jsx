@@ -1,15 +1,11 @@
-import { ScrollArea } from "@/components/ui/scroll-area"
+"use client"
 
-export function PageContainer({ children, scrollable = true }) {
+import { cn } from "@/lib/utils"
+
+export function PageContainer({ children, className, ...props }) {
   return (
-    <>
-      {scrollable ? (
-        <ScrollArea className="h-[calc(100dvh-52px)]">
-          <div className="flex flex-1 p-4 md:px-6">{children}</div>
-        </ScrollArea>
-      ) : (
-        <div className="flex flex-1 p-4 md:px-6">{children}</div>
-      )}
-    </>
+    <div className={cn("container mx-auto px-4 py-6", className)} {...props}>
+      {children}
+    </div>
   )
 }

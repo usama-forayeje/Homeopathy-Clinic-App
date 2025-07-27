@@ -1,118 +1,168 @@
-import { databases, DATABASE_ID, COLLECTIONS, Query } from "@/lib/appwrite"
-import { ID } from "appwrite"
 
-export const consultationService = {
-  // Create a new consultation
+import { databases } from '@/lib/appwirte/client';
+import { ID, Query } from 'appwrite';
+
+// Ensure your environment variables are correctly loaded and available
+const APPWRITE_DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID;
+const APPWRITE_CONSULTATIONS_COLLECTION_ID = process.env.NEXT_PUBLIC_COLLECTION_CONSULTATIONS_ID;
+
+// Define a maximum limit for document fetching to prevent accidental large fetches
+// Appwrite's default limit for listDocuments is 100
+const DEFAULT_QUERY_LIMIT = 100;
+
+const consultationsService = {
+  /**
+   * Fetches consultations for a specific patient, ordered by the latest first.
+   * Assumes you have either:
+   * 1. No specific 'date' or 'time' attributes, and rely on Appwrite's $createdAt.
+   * 2. A 'consultationDate' (DateTime) and/or 'consultationTime' (String) attribute in your schema.
+   * If you have a single DateTime attribute for the consultation date/time, use that.
+   * @param {string} patientId The ID of the patient.
+   * @returns {Promise<Array<Object>>} An array of consultation documents.
+   */
+  async getConsultationsByPatientId(patientId) {
+    if (!patientId) {
+      throw new Error("Patient ID is required to fetch consultations.");
+    }
+    try {
+      const response = await databases.listDocuments(
+        APPWRITE_DATABASE_ID,
+        APPWRITE_CONSULTATIONS_COLLECTION_ID,
+        [
+          Query.equal('patientId', patientId),
+          // ✅ FIX for "Attribute not found in schema: date" error
+          // Option 1: Rely on Appwrite's built-in creation timestamp
+          Query.orderDesc('$createdAt'),
+          // Option 2: If you have a specific DateTime attribute for consultation date
+          // Query.orderDesc('consultationDate'), // Use this if you have a `consultationDate` attribute of type DateTime
+          // Option 3: If you truly have separate 'date' (e.g., YYYY-MM-DD string) and 'time' (e.g., HH:MM string) attributes AND they are indexed.
+          // In most cases, a single DateTime attribute is better for chronological ordering.
+          // If 'date' and 'time' are present and indexed, your original query would be correct.
+          // But based on the error, they are likely not.
+          Query.limit(DEFAULT_QUERY_LIMIT) // Add a limit to prevent fetching too many documents
+        ]
+      );
+      return response.documents;
+    } catch (error) {
+      console.error(`Error getting consultations for patient ${patientId}:`, error);
+      // Re-throw to allow higher-level error handling (e.g., react-query's onError)
+      throw error;
+    }
+  },
+
+  /**
+   * Creates a new consultation record.
+   * @param {Object} consultationData The data for the new consultation.
+   * @returns {Promise<Object>} The created consultation document.
+   */
   async createConsultation(consultationData) {
+    if (!consultationData) {
+      throw new Error("Consultation data is required to create a consultation.");
+    }
     try {
-      const response = await databases.createDocument(DATABASE_ID, COLLECTIONS.CONSULTATIONS, ID.unique(), {
-        patientId: consultationData.patientId,
-        consultationDate: consultationData.consultationDate || new Date().toISOString(),
-        chiefComplaint: consultationData.chiefComplaint || [],
-        chiefComplaintNotes: consultationData.chiefComplaintNotes || "",
-        symptoms: consultationData.symptoms || "",
-        O_E: consultationData.O_E || "",
-        BP: consultationData.BP || "",
-        Pulse: consultationData.Pulse || "",
-        Temp: consultationData.Temp || "",
-        investigation: consultationData.investigation || [],
-        chamberId: consultationData.chamberId,
-        diagnosis: consultationData.diagnosis || "",
-        notes: consultationData.notes || "",
-        followUpDate: consultationData.followUpDate || null,
-        billAmount: consultationData.billAmount || 0,
-      })
-      return response
+      const response = await databases.createDocument(
+        APPWRITE_DATABASE_ID,
+        APPWRITE_CONSULTATIONS_COLLECTION_ID,
+        ID.unique(), // Generates a unique ID for the new document
+        consultationData
+      );
+      return response;
     } catch (error) {
-      console.error("Error creating consultation:", error)
-      throw error
+      console.error('Error creating consultation:', error);
+      throw error;
     }
   },
 
-  // Get all consultations with pagination
-  async getConsultations(limit = 25, offset = 0) {
+  /**
+   * Fetches a single consultation by its ID.
+   * @param {string} consultationId The ID of the consultation.
+   * @returns {Promise<Object>} The consultation document.
+   */
+  async getConsultationById(consultationId) {
+    if (!consultationId) {
+      throw new Error("Consultation ID is required to fetch a consultation.");
+    }
     try {
-      const response = await databases.listDocuments(DATABASE_ID, COLLECTIONS.CONSULTATIONS, [
-        Query.limit(limit),
-        Query.offset(offset),
-        Query.orderDesc("consultationDate"),
-      ])
-      return response
+      const response = await databases.getDocument(
+        APPWRITE_DATABASE_ID,
+        APPWRITE_CONSULTATIONS_COLLECTION_ID,
+        consultationId
+      );
+      return response;
     } catch (error) {
-      console.error("Error fetching consultations:", error)
-      throw error
+      console.error(`Error getting consultation by ID ${consultationId}:`, error);
+      throw error;
     }
   },
 
-  // Get consultations for a specific patient
-  async getPatientConsultations(patientId, limit = 10) {
+  /**
+   * Fetches all consultations.
+   * Use with caution as this can fetch a large number of documents.
+   * Consider adding pagination if this is used in production for large datasets.
+   * @returns {Promise<Array<Object>>} An array of all consultation documents.
+   */
+  async getAllConsultations() {
     try {
-      const response = await databases.listDocuments(DATABASE_ID, COLLECTIONS.CONSULTATIONS, [
-        Query.equal("patientId", patientId),
-        Query.limit(limit),
-        Query.orderDesc("consultationDate"),
-      ])
-      return response
+      const response = await databases.listDocuments(
+        APPWRITE_DATABASE_ID,
+        APPWRITE_CONSULTATIONS_COLLECTION_ID,
+        [
+          Query.orderDesc('$createdAt'), // Order by creation timestamp
+          Query.limit(DEFAULT_QUERY_LIMIT) // Apply a default limit
+        ]
+      );
+      return response.documents;
     } catch (error) {
-      console.error("Error fetching patient consultations:", error)
-      throw error
+      console.error('Error getting all consultations:', error);
+      throw error;
     }
   },
 
-  // Get today's consultations
-  async getTodayConsultations() {
-    try {
-      const today = new Date()
-      const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString()
-      const endOfDay = new Date(today.setHours(23, 59, 59, 999)).toISOString()
-
-      const response = await databases.listDocuments(DATABASE_ID, COLLECTIONS.CONSULTATIONS, [
-        Query.greaterThanEqual("consultationDate", startOfDay),
-        Query.lessThanEqual("consultationDate", endOfDay),
-        Query.orderAsc("consultationDate"),
-      ])
-      return response
-    } catch (error) {
-      console.error("Error fetching today's consultations:", error)
-      throw error
+  /**
+   * Updates an existing consultation record.
+   * @param {string} consultationId The ID of the consultation to update.
+   * @param {Object} data The data to update the consultation with.
+   * @returns {Promise<Object>} The updated consultation document.
+   */
+  async updateConsultation(consultationId, data) {
+    if (!consultationId || !data) {
+      throw new Error("Consultation ID and data are required to update a consultation.");
     }
-  },
-
-  // Get a single consultation
-  async getConsultation(consultationId) {
-    try {
-      const response = await databases.getDocument(DATABASE_ID, COLLECTIONS.CONSULTATIONS, consultationId)
-      return response
-    } catch (error) {
-      console.error("Error fetching consultation:", error)
-      throw error
-    }
-  },
-
-  // Update consultation
-  async updateConsultation(consultationId, updateData) {
     try {
       const response = await databases.updateDocument(
-        DATABASE_ID,
-        COLLECTIONS.CONSULTATIONS,
+        APPWRITE_DATABASE_ID,
+        APPWRITE_CONSULTATIONS_COLLECTION_ID,
         consultationId,
-        updateData,
-      )
-      return response
+        data
+      );
+      return response;
     } catch (error) {
-      console.error("Error updating consultation:", error)
-      throw error
+      console.error(`Error updating consultation ${consultationId}:`, error);
+      throw error;
     }
   },
 
-  // Delete consultation
+  /**
+   * Deletes a consultation record.
+   * @param {string} consultationId The ID of the consultation to delete.
+   * @returns {Promise<boolean>} True if deletion was successful.
+   */
   async deleteConsultation(consultationId) {
-    try {
-      await databases.deleteDocument(DATABASE_ID, COLLECTIONS.CONSULTATIONS, consultationId)
-      return true
-    } catch (error) {
-      console.error("Error deleting consultation:", error)
-      throw error
+    if (!consultationId) {
+      throw new Error("Consultation ID is required to delete a consultation.");
     }
-  },
-}
+    try {
+      await databases.deleteDocument(
+        APPWRITE_DATABASE_ID,
+        APPWRITE_CONSULTATIONS_COLLECTION_ID,
+        consultationId
+      );
+      return true; // Indicate successful deletion
+    } catch (error) {
+      console.error(`Error deleting consultation ${consultationId}:`, error);
+      throw error;
+    }
+  }
+};
+
+export default consultationsService;

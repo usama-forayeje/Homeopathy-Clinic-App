@@ -1,100 +1,120 @@
-import { Home, Users, FileText, Building2, Settings, Stethoscope, ClipboardList, TrendingUp } from "lucide-react"
+
+
+import {
+  Home,
+  Users,
+  FileText,
+  Building2,
+  Settings,
+  Stethoscope,
+  ClipboardList,
+  TrendingUp,
+} from "lucide-react";
 
 export const navItems = [
   {
-    title: "ড্যাশবোর্ড",
+    title: "Dashboard",
     url: "/dashboard",
     icon: Home,
     isActive: false,
   },
   {
-    title: "রোগী ব্যবস্থাপনা",
+    title: "Patient Management",
     icon: Users,
     isActive: false,
     items: [
       {
-        title: "সকল রোগী",
+        title: "All Patients",
         url: "/dashboard/patients",
       },
       {
-        title: "নতুন রোগী",
+        title: "Add New Patient",
         url: "/dashboard/patients/new",
-      },
-      {
-        title: "রোগীর অভ্যাস",
-        url: "/dashboard/patients/habits",
       },
     ],
   },
   {
-    title: "কনসালটেশন",
+    title: "Consultations",
     icon: Stethoscope,
     isActive: false,
     items: [
       {
-        title: "সকল কনসালটেশন",
+        title: "All Consultations",
         url: "/dashboard/consultations",
       },
       {
-        title: "নতুন কনসালটেশন",
+        title: "New Consultation",
         url: "/dashboard/consultations/new",
-      },
-      {
-        title: "আজকের অ্যাপয়েন্টমেন্ট",
-        url: "/dashboard/consultations/today",
       },
     ],
   },
   {
-    title: "প্রেসক্রিপশন",
+    title: "Medicine",
     icon: FileText,
     isActive: false,
     items: [
       {
-        title: "সকল প্রেসক্রিপশন",
-        url: "/dashboard/prescriptions",
-      },
-      {
-        title: "ঔষধের তালিকা",
+        title: "Medicine List",
         url: "/dashboard/medicines",
       },
     ],
   },
   {
-    title: "রিপোর্ট ও অ্যানালিটিক্স",
+    title: "Instructions",
+    icon: FileText,
+    isActive: false,
+    items: [
+      {
+        title: "Manage Instructions",
+        url: "/dashboard/instructions",
+      },
+    ],
+  },
+  {
+    title: "Reports & Analytics",
     icon: TrendingUp,
     isActive: false,
     items: [
       {
-        title: "রোগীর রিপোর্ট",
+        title: "Patient Reports",
         url: "/dashboard/reports/patients",
       },
       {
-        title: "আয়ের রিপোর্ট",
+        title: "Income Reports",
         url: "/dashboard/reports/income",
       },
       {
-        title: "চেম্বার রিপোর্ট",
+        title: "Chamber Reports",
         url: "/dashboard/reports/chambers",
       },
     ],
   },
   {
-    title: "চেম্বার ব্যবস্থাপনা",
+    title: "Chambers",
     url: "/dashboard/chambers",
     icon: Building2,
     isActive: false,
   },
   {
-    title: "রোগের তালিকা",
-    url: "/dashboard/diseases",
+    title: "Habit Definitions",
+    url: "/dashboard/habit-definitions",
     icon: ClipboardList,
     isActive: false,
   },
   {
-    title: "সেটিংস",
+    title: "Settings",
     url: "/dashboard/settings",
     icon: Settings,
     isActive: false,
+    items: [
+      {
+        title: "Profile Settings",
+        url: "/dashboard/settings/profile",
+      },
+      {
+        title: "Add New Instruction",
+        url: "/dashboard/instructions/add",
+      },
+    ],
   },
-]
+];

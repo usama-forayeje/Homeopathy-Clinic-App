@@ -1,3 +1,4 @@
+// components/layout/DashboardLayoutWrapper.jsx
 "use client"
 
 import { useEffect } from "react"
@@ -33,7 +34,10 @@ export function DashboardLayoutWrapper({ children }) {
         <AppSidebar />
         <SidebarInset>
           <Header />
-          {children}
+          {/* ✅ Add padding-top to shift content below the fixed header */}
+          <main className="pt-16"> {/* Adjust 'pt-16' if your header height changes */}
+            {children}
+          </main>
         </SidebarInset>
       </SidebarProvider>
     </KBar>

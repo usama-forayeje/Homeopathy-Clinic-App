@@ -1,7 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { useState, useEffect } from "react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -25,85 +29,174 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { UserAvatarProfile } from "@/components/common/UserAvatarProfile"
-import { navItems } from "@/constants/navigation"
-import { useAuth } from "@/providers/AuthProvider"
-import { ChevronRight, ChevronsDown, CreditCard, LogOut, Stethoscope, User, Bell, Settings } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+} from "@/components/ui/sidebar";
+import { UserAvatarProfile } from "@/components/common/UserAvatarProfile";
+import { navItems } from "@/constants/navigation";
+import { useAuth } from "@/providers/AuthProvider";
+import {
+  ChevronRight,
+  ChevronsDown,
+  CreditCard,
+  LogOut,
+  Stethoscope,
+  User,
+  Bell,
+  Settings,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAllChambers } from "@/hooks/useChambers";
+import { useChamberStore } from "@/store/chamberStore";
+import { ChamberSwitcher } from "../common/ChamberSwitcher";
 
 export const company = {
-  name: "হোমিওকেয়ার প্রো",
+  name: "Popular Homeo Care",
   logo: Stethoscope,
   plan: "Professional",
-}
-
-const chambers = [
-  { id: "1", name: "ধানমন্ডি চেম্বার" },
-  { id: "2", name: "গুলশান চেম্বার" },
-  { id: "3", name: "উত্তরা চেম্বার" },
-]
+};
 
 export function AppSidebar() {
-  const pathname = usePathname()
-  const { user, logout } = useAuth()
-  const [activeChamber, setActiveChamber] = useState(chambers[0])
+  const pathname = usePathname();
+  const { user, logout } = useAuth();
+
+  const { activeChamber, setActiveChamber, setChambers, isLoadingChambers, setLoadingChambers, chambersLoaded } = useChamberStore();
+
+  const { data: fetchedChambers, isLoading: queryLoading } = useAllChambers();
+
+  useEffect(() => {
+    setLoadingChambers(queryLoading);
+
+    if (!queryLoading && fetchedChambers) {
+      setChambers(fetchedChambers);
+
+      if (!activeChamber && fetchedChambers.length > 0) {
+        setActiveChamber(fetchedChambers[0]);
+      }
+    } else if (!queryLoading && fetchedChambers && fetchedChambers.length === 0) {
+      setActiveChamber(null);
+    }
+  }, [queryLoading, fetchedChambers, setChambers, setActiveChamber, setLoadingChambers, activeChamber]);
 
   const handleSwitchChamber = (chamberId) => {
-    const chamber = chambers.find((c) => c.id === chamberId)
-    if (chamber) {
-      setActiveChamber(chamber)
-    }
-  }
+    useChamberStore.getState().setActiveChamberById(chamberId);
+  };
+
+  const isParentActive = (item) => {
+    if (!item.items) return false;
+    return item.items.some((subItem) => {
+      if (subItem.url) {
+        return pathname === subItem.url;
+      }
+      if (subItem.items) {
+        return subItem.items.some((deepSubItem) => pathname === deepSubItem.url);
+      }
+      return false;
+    });
+  };
 
   return (
-    <Sidebar collapsible="icon">
+     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <ChamberSwitcher chambers={chambers} defaultChamber={activeChamber} onChamberSwitch={handleSwitchChamber} />
+        {!isLoadingChambers && chambersLoaded && useChamberStore.getState().chambers.length > 0 ? (
+          <ChamberSwitcher
+            // chambers and defaultChamber props are now directly read from the store
+            // in ChamberSwitcher, reducing props drilling
+            onChamberSwitch={handleSwitchChamber} // Pass the handler
+          />
+        ) : (
+          <div className="p-4 text-center text-sm text-muted-foreground">
+            {isLoadingChambers ? "Loading Chambers..." : "No Chambers Found."}
+          </div>
+        )}
       </SidebarHeader>
 
       <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
-          <SidebarGroupLabel>ওভারভিউ</SidebarGroupLabel>
+          <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarMenu>
             {navItems.map((item) => {
-              const Icon = item.icon
-              return item?.items && item?.items?.length > 0 ? (
-                <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton tooltip={item.title} isActive={pathname === item.url}>
-                        {item.icon && <Icon className="h-4 w-4" />}
+              const Icon = item.icon;
+              if (item?.items && item?.items?.length > 0) {
+                return (
+                  <Collapsible
+                    key={item.title}
+                    asChild
+                    defaultOpen={isParentActive(item)}
+                    className="group/collapsible"
+                  >
+                    <SidebarMenuItem>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton tooltip={item.title}>
+                          {item.icon && <Icon className="h-4 w-4" />}
+                          <span>{item.title}</span>
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items?.map((subItem) => {
+                            const SubIcon = subItem.icon;
+                            if (subItem?.items && subItem?.items?.length > 0) {
+                              return (
+                                <Collapsible
+                                  key={subItem.title}
+                                  asChild
+                                  defaultOpen={isParentActive(subItem)}
+                                  className="group/collapsible"
+                                >
+                                  <SidebarMenuSubItem>
+                                    <CollapsibleTrigger asChild>
+                                      <SidebarMenuSubButton tooltip={subItem.title}>
+                                        {subItem.icon && <SubIcon className="h-4 w-4" />}
+                                        <span>{subItem.title}</span>
+                                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                      </SidebarMenuSubButton>
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent>
+                                      <SidebarMenuSub>
+                                        {subItem.items?.map((deepSubItem) => (
+                                          <SidebarMenuSubItem key={deepSubItem.title}>
+                                            <SidebarMenuSubButton asChild isActive={pathname === deepSubItem.url}>
+                                              <Link href={deepSubItem.url}>
+                                                <span>{deepSubItem.title}</span>
+                                              </Link>
+                                            </SidebarMenuSubButton>
+                                          </SidebarMenuSubItem>
+                                        ))}
+                                      </SidebarMenuSub>
+                                    </CollapsibleContent>
+                                  </SidebarMenuSubItem>
+                                </Collapsible>
+                              );
+                            } else {
+                              return (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton asChild isActive={pathname === subItem.url}>
+                                    <Link href={subItem.url}>
+                                      <span>{subItem.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              );
+                            }
+                          })}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                );
+              } else {
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
+                      <Link href={item.url}>
+                        <Icon className="h-4 w-4" />
                         <span>{item.title}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.items?.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton asChild isActive={pathname === subItem.url}>
-                              <Link href={subItem.url}>
-                                <span>{subItem.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
+                      </Link>
+                    </SidebarMenuButton>
                   </SidebarMenuItem>
-                </Collapsible>
-              ) : (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
-                    <Link href={item.url}>
-                      <Icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )
+                );
+              }
             })}
           </SidebarMenu>
         </SidebarGroup>
@@ -118,7 +211,13 @@ export function AppSidebar() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  {user && <UserAvatarProfile className="h-8 w-8 rounded-lg" showInfo user={user} />}
+                  {user && (
+                    <UserAvatarProfile
+                      className="h-8 w-8 rounded-lg"
+                      showInfo
+                      user={user}
+                    />
+                  )}
                   <ChevronsDown className="ml-auto size-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -130,7 +229,13 @@ export function AppSidebar() {
               >
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="px-1 py-1.5">
-                    {user && <UserAvatarProfile className="h-8 w-8 rounded-lg" showInfo user={user} />}
+                    {user && (
+                      <UserAvatarProfile
+                        className="h-8 w-8 rounded-lg"
+                        showInfo
+                        user={user}
+                      />
+                    )}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -138,32 +243,32 @@ export function AppSidebar() {
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/profile">
                       <User className="mr-2 h-4 w-4" />
-                      প্রোফাইল
+                      Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/billing">
                       <CreditCard className="mr-2 h-4 w-4" />
-                      বিলিং
+                      Billing
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/notifications">
                       <Bell className="mr-2 h-4 w-4" />
-                      নোটিফিকেশন
+                      Notifications
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/settings">
                       <Settings className="mr-2 h-4 w-4" />
-                      সেটিংস
+                      Settings
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  লগ আউট
+                  Log Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -172,52 +277,5 @@ export function AppSidebar() {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
-}
-
-function ChamberSwitcher({ chambers, defaultChamber, onChamberSwitch }) {
-  const [selectedChamber, setSelectedChamber] = useState(defaultChamber)
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <SidebarMenuButton
-          size="lg"
-          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-        >
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-sidebar-primary-foreground">
-            <company.logo className="size-4" />
-          </div>
-          <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{company.name}</span>
-            <span className="truncate text-xs">{selectedChamber.name}</span>
-          </div>
-          <ChevronsDown className="ml-auto" />
-        </SidebarMenuButton>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-        align="start"
-        side="bottom"
-        sideOffset={4}
-      >
-        <DropdownMenuLabel className="text-xs text-muted-foreground">চেম্বার নির্বাচন করুন</DropdownMenuLabel>
-        {chambers.map((chamber) => (
-          <DropdownMenuItem
-            key={chamber.id}
-            onClick={() => {
-              setSelectedChamber(chamber)
-              onChamberSwitch(chamber.id)
-            }}
-            className="gap-2 p-2"
-          >
-            <div className="flex size-6 items-center justify-center rounded-sm border">
-              <Stethoscope className="size-4 shrink-0" />
-            </div>
-            {chamber.name}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
+  );
 }

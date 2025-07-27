@@ -9,31 +9,40 @@ import { UserNav } from "./UserNav"
 import { NotificationBell } from "@/components/common/NotificationBell"
 import { ThemeSelector } from "../ui/theme-selector"
 import { ModeToggle } from "../common/theme-toggle"
+import { cn } from "@/lib/utils"
 
-export function Header({ setSidebarOpen }) {
+export function Header({ className, ...props }) { 
   const { user, logout } = useAuth()
   const { theme, setTheme } = useTheme()
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-      {/* বাম পাশের অংশ: সাইডবার ট্রিগার, সেপারেটর, ব্রেডক্রাম্বস */}
+    <header className={cn(
+        "sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6",
+        // Remove left, width, right, and fixed positioning if they were here.
+        // Tailwind classes like `w-full` are usually fine if the parent defines the width.
+        "w-full", // Ensure it takes full width of its parent
+        className
+      )}
+      {...props}
+    >
+      {/* Left side: Sidebar Trigger, Separator, Breadcrumbs */}
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumbs />
       </div>
 
+      {/* Right side: Search, Notifications, UserNav, Theme Toggles */}
       <div className="flex flex-1 items-center justify-end gap-2 px-4">
         <div className="hidden md:flex">
           <SearchInput />
         </div>
-        <NotificationBell />
-
-        <UserNav user={user} logout={logout} />
+        {/* <NotificationBell /> */}
 
         <ModeToggle />
+        <UserNav user={user} logout={logout} />
 
-        <ThemeSelector />
+        {/* <ThemeSelector /> */}
       </div>
     </header>
   );

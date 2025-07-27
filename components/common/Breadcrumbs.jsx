@@ -3,49 +3,75 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { ChevronRight, Home } from "lucide-react"
-import { Fragment } from "react"
-
-const pathNameMap = {
-  dashboard: "ড্যাশবোর্ড",
-  patients: "রোগীসমূহ",
-  consultations: "কনসালটেশন",
-  prescriptions: "প্রেসক্রিপশন",
-  habits: "রোগীর অভ্যাস",
-  chambers: "চেম্বারসমূহ",
-  diseases: "রোগসমূহ",
-  settings: "সেটিংস",
-  profile: "প্রোফাইল",
-  new: "নতুন",
-  edit: "সম্পাদনা",
-}
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 
 export function Breadcrumbs() {
   const pathname = usePathname()
   const pathSegments = pathname.split("/").filter(Boolean)
 
-  return (
-    <nav className="flex items-center space-x-1 text-sm text-muted-foreground">
-      <Link href="/dashboard" className="flex items-center hover:text-foreground transition-colors">
-        <Home className="h-4 w-4" />
-      </Link>
-      {pathSegments.slice(1).map((segment, index) => {
-        const href = "/" + pathSegments.slice(0, index + 2).join("/")
-        const isLast = index === pathSegments.length - 2
-        const displayName = pathNameMap[segment] || segment
+  const breadcrumbItems = [
+    { name: "হোম", href: "/dashboard", icon: Home },
+    ...pathSegments.slice(1).map((segment, index) => {
+      const href = "/" + pathSegments.slice(0, index + 2).join("/")
+      const name = getBreadcrumbName(segment)
+      return { name, href }
+    }),
+  ]
 
-        return (
-          <Fragment key={segment}>
-            <ChevronRight className="h-4 w-4" />
-            {isLast ? (
-              <span className="font-medium text-foreground">{displayName}</span>
-            ) : (
-              <Link href={href} className="hover:text-foreground transition-colors">
-                {displayName}
-              </Link>
+  function getBreadcrumbName(segment) {
+    const nameMap = {
+      dashboard: "ড্যাশবোর্ড",
+      patients: "রোগীসমূহ",
+      consultations: "কনসালটেশন",
+      chambers: "চেম্বারসমূহ",
+      medicines: "ঔষধ",
+      "habit-definitions": "অভ্যাসের সংজ্ঞা",
+      settings: "সেটিংস",
+      new: "নতুন",
+      edit: "সম্পাদনা",
+    }
+    return nameMap[segment] || segment
+  }
+
+  if (pathSegments.length <= 1) {
+    return null
+  }
+
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        {breadcrumbItems.map((item, index) => (
+          <div key={item.href} className="flex items-center">
+            <BreadcrumbItem>
+              {index === breadcrumbItems.length - 1 ? (
+                <BreadcrumbPage className="flex items-center gap-1">
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  {item.name}
+                </BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link href={item.href} className="flex items-center gap-1">
+                    {item.icon && <item.icon className="h-4 w-4" />}
+                    {item.name}
+                  </Link>
+                </BreadcrumbLink>
+              )}
+            </BreadcrumbItem>
+            {index < breadcrumbItems.length - 1 && (
+              <BreadcrumbSeparator>
+                <ChevronRight className="h-4 w-4" />
+              </BreadcrumbSeparator>
             )}
-          </Fragment>
-        )
-      })}
-    </nav>
+          </div>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
   )
 }

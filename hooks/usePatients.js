@@ -1,99 +1,79 @@
 "use client"
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { patientService } from "@/services/patients"
-import { useToast } from "@/hooks/use-toast"
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import patientsService from '@/services/patients';
+import { Query } from 'appwrite';
+import { toast } from 'sonner';
 
-export function usePatients(searchTerm = "", limit = 25, offset = 0) {
+// Get all patients 
+export function usePatients(searchTerm = '') {
   return useQuery({
-    queryKey: ["patients", { searchTerm, limit, offset }],
-    queryFn: () => patientService.getPatients(limit, offset, searchTerm),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
+    queryKey: ['patients', searchTerm],
+    queryFn: () => {
+      const queries = [];
+      if (searchTerm) {
+        queries.push(
+          Query.or([
+            Query.search('serialNumber', searchTerm),
+            Query.search('name', searchTerm),
+            Query.search('phoneNumber', searchTerm),
+          ])
+        );
+      }
+      return patientsService.getPatients(queries);
+    },
+  });
 }
 
+// Get a specific patient
 export function usePatient(patientId) {
   return useQuery({
-    queryKey: ["patient", patientId],
-    queryFn: () => patientService.getPatient(patientId),
+    queryKey: ['patient', patientId],
+    queryFn: () => patientsService.getPatientById(patientId),
     enabled: !!patientId,
-  })
+  });
 }
 
-export function useRecentPatients(limit = 10) {
-  return useQuery({
-    queryKey: ["patients", "recent", limit],
-    queryFn: () => patientService.getRecentPatients(limit),
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  })
-}
+// patients mutations update create delete
+export function usePatientMutations() {
+  const queryClient = useQueryClient();
 
-export function useCreatePatient() {
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-
-  return useMutation({
-    mutationFn: patientService.createPatient,
+  // patients create
+  const createPatientMutation = useMutation({
+    mutationFn: patientsService.createPatient,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["patients"] })
-      toast({
-        title: "সফল!",
-        description: "নতুন রোগী সফলভাবে যোগ করা হয়েছে।",
-      })
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+      toast.success('patient is created successfully!');
     },
     onError: (error) => {
-      toast({
-        title: "ত্রুটি!",
-        description: "রোগী যোগ করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
-        variant: "destructive",
-      })
+      toast.error(`patient is not created: ${error.message}`);
     },
-  })
-}
+  });
 
-export function useUpdatePatient() {
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-
-  return useMutation({
-    mutationFn: ({ patientId, updateData }) => patientService.updatePatient(patientId, updateData),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["patients"] })
-      queryClient.invalidateQueries({ queryKey: ["patient", data.$id] })
-      toast({
-        title: "সফল!",
-        description: "রোগীর তথ্য সফলভাবে আপডেট করা হয়েছে।",
-      })
+  // patients update
+  const updatePatientMutation = useMutation({
+    mutationFn: ({ patientId, data }) => patientsService.updatePatient(patientId, data),
+    onSuccess: (updatedPatient) => {
+      queryClient.invalidateQueries({ queryKey: ['patients'] }); 
+      queryClient.invalidateQueries({ queryKey: ['patient', updatedPatient.$id] }); 
+      toast.success('patient is updated successfully!');
     },
-    onError: () => {
-      toast({
-        title: "ত্রুটি!",
-        description: "রোগীর তথ্য আপডেট করতে সমস্যা হয়েছে।",
-        variant: "destructive",
-      })
+    onError: (error) => {
+      alert(`রোগীর তথ্য আপডেট করতে ব্যর্থ: ${error.message}`);
     },
-  })
-}
+  });
 
-export function useDeletePatient() {
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-
-  return useMutation({
-    mutationFn: patientService.deletePatient,
+  // patients delete
+  const deletePatientMutation = useMutation({
+    mutationFn: patientsService.deletePatient,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["patients"] })
-      toast({
-        title: "সফল!",
-        description: "রোগী সফলভাবে মুছে ফেলা হয়েছে।",
-      })
+      queryClient.invalidateQueries({ queryKey: ['patients'] }); 
+      toast.success('patient is deleted successfully!');
     },
-    onError: () => {
-      toast({
-        title: "ত্রুটি!",
-        description: "রোগী মুছে ফেলতে সমস্যা হয়েছে।",
-        variant: "destructive",
-      })
+    onError: (error) => {
+      toast.error(`patient is not deleted: ${error.message}`);
     },
-  })
+  });
+
+  return { createPatientMutation, updatePatientMutation, deletePatientMutation };
 }

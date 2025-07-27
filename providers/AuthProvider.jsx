@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { account } from "@/lib/appwrite"
+import { account } from "@/lib/appwirte/client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
