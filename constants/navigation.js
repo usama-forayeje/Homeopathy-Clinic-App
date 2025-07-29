@@ -1,15 +1,4 @@
-
-
-import {
-  Home,
-  Users,
-  FileText,
-  Building2,
-  Settings,
-  Stethoscope,
-  ClipboardList,
-  TrendingUp,
-} from "lucide-react";
+import { Home, Users, FileText, Building2, Settings, Stethoscope, ClipboardList, TrendingUp } from "lucide-react"
 
 export const navItems = [
   {
@@ -49,28 +38,6 @@ export const navItems = [
     ],
   },
   {
-    title: "Medicine",
-    icon: FileText,
-    isActive: false,
-    items: [
-      {
-        title: "Medicine List",
-        url: "/dashboard/medicines",
-      },
-    ],
-  },
-  {
-    title: "Instructions",
-    icon: FileText,
-    isActive: false,
-    items: [
-      {
-        title: "Manage Instructions",
-        url: "/dashboard/instructions",
-      },
-    ],
-  },
-  {
     title: "Reports & Analytics",
     icon: TrendingUp,
     isActive: false,
@@ -88,6 +55,18 @@ export const navItems = [
         url: "/dashboard/reports/chambers",
       },
     ],
+  },
+  {
+    title: "Medicine",
+    url: "/dashboard/medicines",
+    icon: FileText,
+    isActive: false,
+  },
+  {
+    title: "Instructions",
+    url: "/dashboard/instructions",
+    icon: FileText,
+    isActive: false,
   },
   {
     title: "Chambers",
@@ -117,4 +96,4 @@ export const navItems = [
       },
     ],
   },
-];
+]

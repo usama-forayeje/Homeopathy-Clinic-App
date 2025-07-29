@@ -1,72 +1,249 @@
-# 🏥 Popular Homeo Care - আধুনিক হোমিওপ্যাথিক ক্লিনিক ম্যানেজমেন্ট সিস্টেম
+# 🏥 Popular Homeo Care - Next-Level Homeopathic Clinic Management System
 
-একটি সম্পূর্ণ, আধুনিক এবং পেশাদার হোমিওপ্যাথিক ক্লিনিক ম্যানেজমেন্ট সিস্টেম যা ডাক্তারদের রোগী, কনসালটেশন, প্রেসক্রিপশন এবং ক্লিনিক ডেটা দক্ষতার সাথে পরিচালনা করতে সাহায্য করে।
+A **premium, professional-grade** homeopathic clinic management system built with **Next.js 14**, **React 18**, and **Appwrite**. This system provides comprehensive patient management, consultation tracking, prescription handling, and advanced features designed specifically for homeopathic practitioners.
 
-## 🚀 প্রযুক্তিগত স্ট্যাক
+## 🚀 Technology Stack
 
-- **ফ্রন্টএন্ড:** Next.js 14 (App Router), React 18, JSX
-- **UI লাইব্রেরি:** Shadcn/ui, Tailwind CSS
-- **ডেটা ফেচিং:** TanStack Query (React Query)
-- **ব্যাকএন্ড:** Appwrite (BaaS)
-- **অথেন্টিকেশন:** Google OAuth (Appwrite Auth)
-- **স্টেট ম্যানেজমেন্ট:** React Query + Context API
-- **অ্যানিমেশন:** Framer Motion, Tailwind CSS Animations
-- **ভয়েস ইনপুট:** Web Speech API
-- **QR কোড:** QR Code Generation for Prescriptions
+- **Frontend:** Next.js 14 (App Router), React 18, JSX
+- **UI Library:** Shadcn/ui, Tailwind CSS
+- **Data Fetching:** TanStack Query (React Query)
+- **Backend:** Appwrite (BaaS)
+- **Authentication:** Google OAuth (Appwrite Auth)
+- **State Management:** React Query + Context API + Zustand
+- **Animations:** Framer Motion, Tailwind CSS Animations
+- **Voice Input:** Web Speech API
+- **QR Code:** QR Code Generation for Prescriptions
+- **Tables:** TanStack Table for advanced data display
+- **Notifications:** Sonner for toast notifications
+- **Icon Library:** Lucide React
 
-## 📋 মূল বৈশিষ্ট্যসমূহ
+## 📋 Core Features
 
-### 🧑‍⚕️ রোগী ব্যবস্থাপনা
-- রোগীর সম্পূর্ণ প্রোফাইল তৈরি ও সম্পাদনা
-- ইউনিক ফোন নম্বর দিয়ে রোগী সনাক্তকরণ
-- রোগীর ইতিহাস ট্র্যাকিং
-- উন্নত সার্চ ও ফিল্টারিং
-- সিরিয়াল নম্বর ভিত্তিক রোগী ব্যবস্থাপনা
+### 🧑‍⚕️ Advanced Patient Management
+- Complete patient profile creation and editing
+- Unique phone number and serial number identification
+- Comprehensive patient history tracking
+- Advanced search and filtering with debounced input
+- Patient timeline and consultation history
+- Professional patient cards with quick actions
+- Infinity scroll for large patient lists
+- Smart age calculation from date of birth
 
-### 📋 কনসালটেশন ব্যবস্থাপনা
-- বিস্তারিত কনসালটেশন রেকর্ড
-- প্রধান অভিযোগ ও লক্ষণ ট্র্যাকিং
-- চিকিৎসা ইতিহাস ও পারিবারিক ইতিহাস
-- সাধারণ ও সিস্টেমিক পরীক্ষা
-- রোগ নির্ণয় ও চিকিৎসা পরিকল্পনা
-- ফলো-আপ ডেট সেটিং
-- চেম্বার-ভিত্তিক বিলিং
+### 📋 Comprehensive Consultation System
+- Detailed consultation records with tabbed interface
+- Chief complaint and symptom tracking
+- Medical history and family history
+- General and systemic examination
+- Disease diagnosis and treatment planning
+- Follow-up date scheduling
+- Chamber-based billing system
+- Professional consultation history table
 
-### 🧘 রোগীর অভ্যাস ট্র্যাকিং
-- ডাইনামিক হ্যাবিট কনফিগারেশন
-- বুলিয়ান (হ্যাঁ/না) টাইপ
-- স্কেল (১-১০) রেটিং
-- সিলেক্ট ড্রপডাউন অপশন
-- টেক্সট ও নাম্বার ইনপুট ফিল্ড
-- কনসালটেশন-ভিত্তিক হ্যাবিট ট্র্যাকিং
+### 💊 Advanced Prescription Management
+- Digital prescription creation
+- Medicine name, potency, and dosage
+- Treatment duration tracking
+- Prescription history
+- QR code enabled prescriptions
+- Patients can scan QR to view prescriptions
+- Professional print layouts
 
-### 💊 প্রেসক্রিপশন ব্যবস্থাপনা
-- ডিজিটাল প্রেসক্রিপশন তৈরি
-- ঔষধের নাম, পোটেন্সি, ডোজ
-- চিকিৎসার সময়কাল
-- প্রেসক্রিপশন ইতিহাস
-- QR কোড সহ প্রিন্ট সুবিধা
-- রোগী QR স্ক্যান করে প্রেসক্রিপশন দেখতে পারবেন
+### 🧘 Dynamic Patient Habits Tracking
+- Configurable habit definitions by doctors
+- Multiple input types:
+  - Boolean (Yes/No)
+  - Scale (1-10 rating)
+  - Select dropdown options
+  - Text and number inputs
+- Consultation-based habit tracking
+- Habit trend analysis and visualization
+- Professional habit display cards
 
-### 🏥 চেম্বার ব্যবস্থাপনা
-- একাধিক চেম্বার সাপোর্ট
-- চেম্বার-ভিত্তিক রিপোর্টিং
-- যোগাযোগের তথ্য ও খোলার সময়
-- চেম্বার সুইচিং সুবিধা
+### 🏥 Multi-Chamber Management
+- Multiple chamber support
+- Chamber switching functionality
+- Chamber-based reporting
+- Contact information and opening hours
+- Professional chamber selection interface
 
-### 🎤 ভয়েস ইনপুট
-- বাংলা ভয়েস রিকগনিশন
-- সকল টেক্সট ফিল্ডে ভয়েস ইনপুট
-- হাতে লেখার পরিবর্তে কথা বলে ডেটা এন্ট্রি
+### 🎤 Voice Input Integration
+- Bengali voice recognition
+- All text fields support voice input
+- Hands-free data entry
+- Professional voice input UI
 
-## 🛠️ ইনস্টলেশন ও সেটআপ
+### 📊 Advanced Data Tables
+- TanStack Table integration
+- Sortable and filterable columns
+- Pagination and infinite scroll
+- Professional table layouts
+- Export functionality
+- Advanced search capabilities
 
-### পূর্বশর্ত
-- Node.js 18+ ইনস্টল করা
-- Appwrite সার্ভার সেটআপ
-- Google OAuth অ্যাপ তৈরি
+## 🎯 Technical Excellence
 
-### ১. প্রোজেক্ট ক্লোন ও ডিপেন্ডেন্সি ইনস্টল
+### 🏗️ Architecture
+- **Business-class UI/UX** with shadcn/ui components
+- **Responsive design** optimized for all devices
+- **TanStack Query** for efficient data fetching and caching
+- **Professional animations** and smooth transitions
+- **Type-safe development** approach
+- **Performance optimized** with intelligent caching
+- **Modular component architecture**
+
+### 🔧 Advanced Hooks & Services
+- Custom React hooks for all data operations
+- Reusable service layer for Appwrite integration
+- Optimistic updates for better UX
+- Error handling and retry mechanisms
+- Professional loading states
+
+### 🎨 UI/UX Features
+- **Dark/Light mode** with system detection
+- **Sticky headers** across all pages
+- **Professional sidebar** with chamber switching
+- **Command palette** (Ctrl+K) for quick navigation
+- **Breadcrumb navigation**
+- **Toast notifications** for user feedback
+- **Loading skeletons** for better perceived performance
+
+## 📊 Database Schema
+
+### Patients Collection
+\`\`\`javascript
+{
+  $id: string (pk),
+  name: string (required),
+  age: integer (required),
+  dob: datetime (optional),
+  gender: enum (required), // "Male", "Female", "Other"
+  address: string (optional),
+  phoneNumber: string (required, unique),
+  occupation: string (optional),
+  patientId: string (required, unique), // Serial number
+  bloodGroup: string (optional),
+  notes: string (optional),
+  firstConsultationDate: datetime (required),
+  $createdAt: datetime,
+  $updatedAt: datetime
+}
+\`\`\`
+
+### Consultations Collection
+\`\`\`javascript
+{
+  $id: string (pk),
+  patientId: string (relationship to Patients, required),
+  chamberId: string (relationship to Chambers, required),
+  consultationDate: datetime (required),
+  chiefComplaint: string[] (required),
+  otherComplaints: string[] (optional),
+  symptoms: string (optional),
+  BP: string (optional),
+  Pulse: string (optional),
+  Temp: string (optional),
+  O_E: string (optional), // On Examination
+  historyOfPresentIllness: string (optional),
+  familyHistory: string (optional),
+  diagnosis: string[] (required),
+  prescriptions: string[] (optional),
+  dosageInstructions: string[] (optional),
+  dietAndLifestyleAdvice: string[] (optional),
+  prescriptionNotes: string (optional),
+  notes: string (optional),
+  followUpDate: datetime (optional),
+  billAmount: double (optional),
+  $createdAt: datetime,
+  $updatedAt: datetime
+}
+\`\`\`
+
+### Chambers Collection
+\`\`\`javascript
+{
+  $id: string (pk),
+  chamberName: string (required),
+  location: string (required),
+  contactNumber: string (optional),
+  email: string (optional),
+  openingHours: string (optional),
+  consultationFee: double (optional),
+  isActive: boolean (required, default: true),
+  notes: string (optional),
+  $createdAt: datetime,
+  $updatedAt: datetime
+}
+\`\`\`
+
+### Medicines Collection
+\`\`\`javascript
+{
+  $id: string (pk),
+  medicineName: string (required),
+  potency: string (optional),
+  category: string (optional),
+  manufacturer: string (optional),
+  description: string (optional),
+  isActive: boolean (required, default: true),
+  createdAt: datetime (required),
+  $createdAt: datetime,
+  $updatedAt: datetime
+}
+\`\`\`
+
+### MedicineInstructions Collection
+\`\`\`javascript
+{
+  $id: string (pk),
+  instructionText: string (required),
+  category: string (optional),
+  isCommon: boolean (default: false),
+  isActive: boolean (required, default: true),
+  createdAt: datetime (required),
+  $createdAt: datetime,
+  $updatedAt: datetime
+}
+\`\`\`
+
+### HabitDefinitions Collection
+\`\`\`javascript
+{
+  $id: string (pk),
+  name: string (required),
+  description: string (optional),
+  inputType: enum (required), // text, number, boolean, scale, select
+  options: string (optional), // JSON array for select type
+  category: string (optional),
+  isActive: boolean (required, default: true),
+  createdAt: datetime (required),
+  $createdAt: datetime,
+  $updatedAt: datetime
+}
+\`\`\`
+
+### PatientsHabits Collection
+\`\`\`javascript
+{
+  $id: string (pk),
+  habitDefinitionId: string (relationship to HabitDefinitions, required),
+  patientId: string (relationship to Patients, required),
+  consultationId: string (relationship to Consultations, optional),
+  value: string (required),
+  notes: string (optional),
+  recordedDate: datetime (required),
+  $createdAt: datetime,
+  $updatedAt: datetime
+}
+\`\`\`
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- Node.js 18+ installed
+- Appwrite server setup
+- Google OAuth app created
+
+### 1. Clone Project & Install Dependencies
 
 \`\`\`bash
 git clone <repository-url>
@@ -74,9 +251,9 @@ cd popular-homeo-care
 npm install
 \`\`\`
 
-### ২. এনভায়রনমেন্ট ভেরিয়েবল সেটআপ
+### 2. Environment Variables Setup
 
-`.env.local` ফাইল তৈরি করুন:
+Create `.env.local` file:
 
 \`\`\`env
 # Appwrite Configuration
@@ -89,280 +266,183 @@ NEXT_PUBLIC_COLLECTION_PATIENTS_ID=patients-collection-id
 NEXT_PUBLIC_COLLECTION_CONSULTATIONS_ID=consultations-collection-id
 NEXT_PUBLIC_COLLECTION_PATIENT_HABITS_ID=patient-habits-collection-id
 NEXT_PUBLIC_COLLECTION_HABIT_DEFINITIONS_ID=habit-definitions-collection-id
-NEXT_PUBLIC_COLLECTION_PRESCRIBED_MEDICINES_ID=prescribed-medicines-collection-id
+NEXT_PUBLIC_COLLECTION_MEDICINES_ID=medicines-collection-id
+NEXT_PUBLIC_COLLECTION_MEDICINEINSTRUCTIONS_ID=medicine-instructions-collection-id
 NEXT_PUBLIC_COLLECTION_CHAMBERS_ID=chambers-collection-id
 
 # Google OAuth
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
 \`\`\`
 
-## 📊 Appwrite ডেটাবেস স্কিমা
+### 3. Appwrite Database Setup
 
-### Patients Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  name: string (required),
-  gender: string (required), // "Male", "Female", "Other"
-  age: integer (required),
-  dob: datetime (optional),
-  address: string (optional),
-  phoneNumber: string (required, unique),
-  occupation: string (optional),
-  serialNumber: string (required, unique),
-  lastVisitDate: datetime (optional),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
+#### Create Database
+1. Login to Appwrite console
+2. Create new project
+3. Create database
 
-### Consultations Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  patientId: string (relationship to Patients, required),
-  consultationDate: datetime (required),
-  time: string (required),
-  chiefComplaint: string (required),
-  historyOfPresentIllness: string (optional),
-  pastMedicalHistory: string (optional),
-  familyHistory: string (optional),
-  personalHistory: string (optional),
-  generalExamination: string (optional),
-  systemicExamination: string (optional),
-  investigations: string (optional),
-  diagnosis: string (required),
-  treatmentPlan: string (required),
-  advice: string (optional),
-  followUpDate: datetime (optional),
-  chamberId: string (relationship to Chambers, required),
-  doctorId: string (required),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
+#### Create Collections
 
-### PatientHabits Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  habitDefinitionId: string (relationship to HabitDefinitions, required),
-  patientId: string (relationship to Patients, required),
-  consultationId: string (relationship to Consultations, required),
-  value: string (required), // Value based on habitType
-  notes: string (optional),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### HabitDefinitions Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  name: string (required, unique),
-  inputType: string (required), // "text", "number", "select", "boolean", "scale"
-  options: string (optional), // JSON string for select options
-  description: string (optional),
-  isActive: boolean (required, default: true),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### PrescribedMedicines Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  consultationId: string (relationship to Consultations, required),
-  medicineName: string (required),
-  potency: string (optional),
-  dosage: string (required),
-  duration: string (optional),
-  notes: string (optional),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### Chambers Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  chamberName: string (required, unique),
-  location: string (optional),
-  contactNumber: string (optional),
-  contactPerson: string (optional),
-  openingHours: string (optional),
-  notes: string (optional),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-## 🔗 ডেটাবেস রিলেশনশিপ
-
-\`\`\`
-Patients (1) ←→ (Many) Consultations
-Chambers (1) ←→ (Many) Consultations
-Patients (1) ←→ (Many) PatientHabits
-Consultations (1) ←→ (Many) PatientHabits
-Consultations (1) ←→ (Many) PrescribedMedicines
-HabitDefinitions (1) ←→ (Many) PatientHabits
-\`\`\`
-
-## 🎯 Appwrite কালেকশন সেটআপ গাইড
-
-### ১. ডেটাবেস তৈরি
-1. Appwrite কনসোলে লগইন করুন
-2. নতুন প্রোজেক্ট তৈরি করুন
-3. ডেটাবেস তৈরি করুন
-
-### ২. কালেকশন তৈরি
-
-#### Patients কালেকশন
+##### Patients Collection
 \`\`\`bash
 Collection ID: patients
 Attributes:
 - name (string, 255, required)
-- gender (string, 10, required)
 - age (integer, required)
 - dob (datetime, optional)
+- gender (enum, required) // Male, Female, Other
 - address (string, 500, optional)
 - phoneNumber (string, 15, required, unique)
 - occupation (string, 100, optional)
-- serialNumber (string, 50, required, unique)
-- lastVisitDate (datetime, optional)
+- patientId (string, 50, required, unique)
+- bloodGroup (string, 10, optional)
+- notes (string, 1000, optional)
+- firstConsultationDate (datetime, required)
 
 Indexes:
 - phoneNumber (unique)
-- serialNumber (unique)
+- patientId (unique)
 - name (fulltext)
+- firstConsultationDate (key)
 \`\`\`
 
-#### Consultations কালেকশন
+##### Consultations Collection
 \`\`\`bash
 Collection ID: consultations
 Attributes:
 - patientId (string, 255, required)
-- consultationDate (datetime, required)
-- time (string, 10, required)
-- chiefComplaint (string, 1000, required)
-- historyOfPresentIllness (string, 2000, optional)
-- pastMedicalHistory (string, 2000, optional)
-- familyHistory (string, 1000, optional)
-- personalHistory (string, 1000, optional)
-- generalExamination (string, 1000, optional)
-- systemicExamination (string, 1000, optional)
-- investigations (string, 1000, optional)
-- diagnosis (string, 1000, required)
-- treatmentPlan (string, 2000, required)
-- advice (string, 1000, optional)
-- followUpDate (datetime, optional)
 - chamberId (string, 255, required)
-- doctorId (string, 255, required)
+- consultationDate (datetime, required)
+- chiefComplaint (string[], required)
+- otherComplaints (string[], optional)
+- symptoms (string, 2000, optional)
+- BP (string, 20, optional)
+- Pulse (string, 20, optional)
+- Temp (string, 20, optional)
+- O_E (string, 2000, optional)
+- historyOfPresentIllness (string, 2000, optional)
+- familyHistory (string, 1000, optional)
+- diagnosis (string[], required)
+- prescriptions (string[], optional)
+- dosageInstructions (string[], optional)
+- dietAndLifestyleAdvice (string[], optional)
+- prescriptionNotes (string, 1000, optional)
+- notes (string, 1000, optional)
+- followUpDate (datetime, optional)
+- billAmount (double, optional)
 
 Indexes:
 - patientId
 - consultationDate
 - chamberId
-- doctorId
+- followUpDate (key)
 \`\`\`
 
-#### PatientHabits কালেকশন
-\`\`\`bash
-Collection ID: patient_habits
-Attributes:
-- habitDefinitionId (string, 255, required)
-- patientId (string, 255, required)
-- consultationId (string, 255, required)
-- value (string, 500, required)
-- notes (string, 1000, optional)
-
-Indexes:
-- habitDefinitionId
-- patientId
-- consultationId
-\`\`\`
-
-#### HabitDefinitions কালেকশন
-\`\`\`bash
-Collection ID: habit_definitions
-Attributes:
-- name (string, 100, required, unique)
-- inputType (string, 20, required)
-- options (string, 1000, optional)
-- description (string, 500, optional)
-- isActive (boolean, required, default: true)
-
-Indexes:
-- name (unique)
-- isActive
-\`\`\`
-
-#### PrescribedMedicines কালেকশন
-\`\`\`bash
-Collection ID: prescribed_medicines
-Attributes:
-- consultationId (string, 255, required)
-- medicineName (string, 200, required)
-- potency (string, 50, optional)
-- dosage (string, 200, required)
-- duration (string, 100, optional)
-- notes (string, 500, optional)
-
-Indexes:
-- consultationId
-- medicineName
-\`\`\`
-
-#### Chambers কালেকশন
+##### Chambers Collection
 \`\`\`bash
 Collection ID: chambers
 Attributes:
-- chamberName (string, 100, required, unique)
-- location (string, 500, optional)
+- chamberName (string, 100, required)
+- location (string, 200, required)
 - contactNumber (string, 15, optional)
-- contactPerson (string, 100, optional)
+- email (string, 100, optional)
 - openingHours (string, 200, optional)
-- notes (string, 1000, optional)
+- consultationFee (double, optional)
+- isActive (boolean, required, default: true)
+- notes (string, 500, optional)
 
 Indexes:
-- chamberName (unique)
+- chamberName (key)
+- isActive (key)
 \`\`\`
 
-## 🔐 অথেন্টিকেশন সেটআপ
+##### Medicines Collection
+\`\`\`bash
+Collection ID: medicines
+Attributes:
+- medicineName (string, 200, required)
+- potency (string, 50, optional)
+- category (string, 100, optional)
+- manufacturer (string, 100, optional)
+- description (string, 500, optional)
+- isActive (boolean, required, default: true)
+- createdAt (datetime, required)
 
-### Google OAuth সেটআপ
-1. Google Cloud Console এ যান
-2. নতুন প্রোজেক্ট তৈরি করুন
-3. OAuth 2.0 credentials তৈরি করুন
-4. Authorized redirect URIs যোগ করুন:
-   - `http://localhost:3000/auth/callback`
-   - `https://your-domain.com/auth/callback`
+Indexes:
+- medicineName (fulltext)
+- category (key)
+- isActive (key)
+\`\`\`
 
-### Appwrite Authentication সেটআপ
-1. Appwrite কনসোলে Auth সেকশনে যান
-2. Google OAuth প্রোভাইডার এনাবল করুন
-3. Google Client ID ও Secret যোগ করুন
-4. Redirect URLs কনফিগার করুন
+##### MedicineInstructions Collection
+\`\`\`bash
+Collection ID: medicineInstructions
+Attributes:
+- instructionText (string, 300, required)
+- category (string, 100, optional)
+- isCommon (boolean, default: false)
+- isActive (boolean, required, default: true)
+- createdAt (datetime, required)
 
-## 🚀 অ্যাপ্লিকেশন চালানো
+Indexes:
+- instructionText (fulltext)
+- isCommon (key)
+- isActive (key)
+\`\`\`
+
+##### HabitDefinitions Collection
+\`\`\`bash
+Collection ID: habitDefinitions
+Attributes:
+- name (string, 100, required)
+- description (string, 300, optional)
+- inputType (enum, required) // text, number, boolean, scale, select
+- options (string, 1000, optional) // JSON array for select type
+- category (string, 100, optional)
+- isActive (boolean, required, default: true)
+- createdAt (datetime, required)
+
+Indexes:
+- name (key)
+- category (key)
+- isActive (key)
+\`\`\`
+
+##### PatientsHabits Collection
+\`\`\`bash
+Collection ID: patientsHabits
+Attributes:
+- habitDefinitionId (string, 255, required)
+- patientId (string, 255, required)
+- consultationId (string, 255, optional)
+- value (string, 500, required)
+- notes (string, 500, optional)
+- recordedDate (datetime, required)
+
+Indexes:
+- patientId (key)
+- habitDefinitionId (key)
+- consultationId (key)
+- recordedDate (key)
+\`\`\`
+
+## 🚀 Run Application
 
 \`\`\`bash
 npm run dev
 \`\`\`
 
-অ্যাপ্লিকেশনটি `http://localhost:3000` এ চালু হবে।
+Application will start at `http://localhost:3000`.
 
-## 📁 প্রোজেক্ট স্ট্রাকচার
+## 📁 Project Structure
 
 \`\`\`
 popular-homeo-care/
 ├── app/                    # Next.js App Router
-│   ├── (auth)/            # Authentication routes
 │   ├── dashboard/         # Main application
 │   │   ├── patients/      # Patient management
+│   │   │   ├── new/       # Add new patient
+│   │   │   └── [id]/      # Patient details & edit
 │   │   ├── consultations/ # Consultation management
 │   │   ├── chambers/      # Chamber management
 │   │   ├── medicines/     # Medicine management
@@ -373,91 +453,131 @@ popular-homeo-care/
 ├── components/            # Reusable components
 │   ├── ui/               # Shadcn/ui components
 │   ├── layout/           # Layout components
+│   │   ├── Header.jsx    # Main header with chamber selector
+│   │   ├── Sidebar.jsx   # Navigation sidebar
+│   │   └── ChamberSelector.jsx # Chamber switching
 │   ├── forms/            # Form components
-│   ├── landing/          # Landing page components
+│   │   ├── PatientConsultationForm.jsx # Main form
+│   │   ├── PatientDetailsForm.jsx      # Patient tab
+│   │   ├── ConsultationDetailsForm.jsx # Consultation tab
+│   │   ├── PrescriptionForm.jsx        # Prescription tab
+│   │   ├── HabitForm.jsx              # Habits tab
+│   │   └── FormActions.jsx            # Form actions
+│   ├── patients/         # Patient-specific components
 │   ├── common/           # Common components
-│   └── kbar/             # Command palette
+│   └── landing/          # Landing page components
 ├── lib/                   # Utilities and configurations
 ├── services/             # Appwrite service functions
 ├── hooks/                # Custom React hooks
+├── store/                # Zustand stores
+│   ├── chamberStore.js   # Chamber state management
+│   ├── medicineStore.js  # Medicine state
+│   └── instructionStore.js # Instruction state
+├── schemas/              # Zod validation schemas
+│   └── patientConsultation.schema.js
 ├── providers/            # Context providers
 ├── constants/            # App constants
 └── styles/               # Global styles
 \`\`\`
 
-## 🎨 UI/UX বৈশিষ্ট্য
+## 🔐 Security Features
 
-### 🌙 থিম সাপোর্ট
-- ডার্ক/লাইট মোড
-- সিস্টেম থিম ডিটেকশন
-- স্মুথ থিম ট্রানজিশন
-
-### 📱 রেসপন্সিভ ডিজাইন
-- মোবাইল-ফার্স্ট অ্যাপ্রোচ
-- ট্যাবলেট ও ডেস্কটপ অপ্টিমাইজেশন
-- টাচ-ফ্রেন্ডলি ইন্টারফেস
-
-### ⌨️ কীবোর্ড শর্টকাট
-- `Ctrl+K` - কমান্ড প্যালেট
-- `Ctrl+B` - সাইডবার টগল
-- দ্রুত নেভিগেশন
-
-## 🔧 অ্যাডভান্সড ফিচার
-
-### 🎤 ভয়েস ইনপুট
-- Web Speech API ব্যবহার
-- বাংলা ভাষা সাপোর্ট
-- সকল টেক্সট ফিল্ডে উপলব্ধ
-
-### 📊 রিয়েল-টাইম ডেটা
-- TanStack Query দিয়ে ক্যাশিং
-- অটোমেটিক রিফেচিং
-- অপ্টিমিস্টিক আপডেট
-
-### 🖨️ প্রিন্ট ফিচার
-- প্রেসক্রিপশন প্রিন্ট
-- QR কোড সহ প্রিন্ট
-- কাস্টম প্রিন্ট লেআউট
-
-## 🔒 নিরাপত্তা বৈশিষ্ট্য
-
-- Google OAuth দিয়ে নিরাপদ লগইন
+- Google OAuth secure authentication
 - Role-based access control
-- ডেটা এনক্রিপশন
+- Data encryption
 - Session management
 - CORS protection
-- Input validation ও sanitization
+- Input validation and sanitization
+- Secure API endpoints
+- Secure file upload with type validation
 
-## 📈 পারফরমেন্স অপ্টিমাইজেশন
+## 📈 Performance Optimizations
 
-- React Query দিয়ে ডেটা ক্যাশিং
-- Lazy loading
+- React Query data caching and synchronization
+- Debounced search inputs
+- Lazy loading components
 - Image optimization
 - Code splitting
 - Bundle optimization
+- Infinite scroll for large datasets
+- Optimistic updates
 
-## 🌐 ব্রাউজার সাপোর্ট
+## 🌐 Browser Support
 
 - Chrome 90+
 - Firefox 88+
 - Safari 14+
 - Edge 90+
 
-## 📞 সাপোর্ট ও ডকুমেন্টেশন
+## 📱 Mobile Responsiveness
 
-### 🆘 সাহায্য
-- ইন-অ্যাপ হেল্প সেন্টার
-- ভিডিও টিউটোরিয়াল
-- FAQ সেকশন
+- Mobile-first approach
+- Touch-friendly interface
+- Responsive tables and forms
+- Optimized for tablets and phones
+- Progressive Web App capabilities
 
-### 📧 যোগাযোগ
-- ইমেইল: support@popularhomeocare.com
-- ফোন: +৮৮০ ১৭১২-৩৪৫৬৭৮
+## 🎯 Key Features Highlights
 
-## 📄 লাইসেন্স
+### Professional Dashboard
+- Sticky header with breadcrumbs
+- Collapsible sidebar with chamber switching
+- Real-time notifications
+- Command palette for quick navigation
+- Professional theme switching
 
-এই প্রোজেক্টটি MIT লাইসেন্সের অধীনে লাইসেন্সপ্রাপ্ত।
+### Advanced Patient Management
+- Comprehensive patient profiles
+- Consultation history with TanStack Table
+- Patient habits tracking and trends
+- Timeline view of patient interactions
+- Professional patient cards
+
+### Intelligent Search & Filtering
+- Debounced search inputs
+- Advanced filtering options
+- Real-time search results
+- Professional search UI
+
+### Business-Class Forms
+- Multi-tab form interfaces
+- Voice input integration
+- Professional validation
+- Optimistic updates
+- Auto-save capabilities
+
+## 📞 Support & Documentation
+
+### Help Resources
+- In-app help center
+- Video tutorials
+- FAQ section
+- Professional documentation
+
+### Contact
+- Email: support@popularhomeocare.com
+- Phone: +880 1712-345678
+- Website: https://popularhomeocare.com
+
+## 📄 License
+
+This project is licensed under the MIT License.
 
 ---
 
-**Popular Homeo Care** - আধুনিক হোমিওপ্যাথিক ক্লিনিক ব্যবস্থাপনার জন্য একটি সম্পূর্ণ সমাধান।
+**Popular Homeo Care** - A complete solution for modern homeopathic clinic management with professional UI/UX, advanced features, and business-class architecture.
+
+### Ready for Production
+
+This system is **production-ready** with:
+- ✅ Professional UI/UX design
+- ✅ Complete form submission functionality
+- ✅ Advanced data management with caching
+- ✅ Multi-chamber support with active chamber selection
+- ✅ Voice input integration for Bengali language
+- ✅ Comprehensive patient management system
+- ✅ Advanced consultation tracking with habits
+- ✅ Professional prescription management with QR codes
+- ✅ Business-class architecture and performance optimization
+
+**Start managing your homeopathic practice with confidence!** 🏥✨

@@ -31,6 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { PageContainer } from "@/components/common/PageContainer";
 
 export default function MedicineInstructionsPage() {
   const { data: instructions = [], isLoading, isError, error } = useAllMedicineInstructions();
@@ -65,7 +66,7 @@ export default function MedicineInstructionsPage() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "instructionText", // Match your schema/Appwrite attribute
+        accessorKey: "instructionText",
         header: ({ column }) => (
           <Button
             variant="ghost"
@@ -76,12 +77,12 @@ export default function MedicineInstructionsPage() {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
-        cell: ({ row }) => <div className="font-medium">{row.getValue("instructionText")}</div>,
+        cell: ({ row }) => <div className="font-medium truncate max-w-[300px] md:max-w-[400px]" title={row.getValue("instructionText") || "N/A"}>{row.getValue("instructionText")}</div>,
       },
       {
-        accessorKey: "notes", // Match your schema/Appwrite attribute
+        accessorKey: "notes",
         header: "Notes",
-        cell: ({ row }) => <div>{row.getValue("notes") || "N/A"}</div>,
+        cell: ({ row }) => <div className="font-medium truncate max-w-[200px] md:max-w-[300px]" >{row.getValue("notes") || "N/A"}</div>,
       },
       {
         id: "actions",
@@ -89,13 +90,13 @@ export default function MedicineInstructionsPage() {
         cell: ({ row }) => (
           <div className="text-right">
             <Link href={`/dashboard/instructions/edit/${row.original.$id}`}>
-              <Button variant="ghost" size="sm" className="mr-2 **:cursor-pointer">
+              <Button variant="ghost" size="sm" className="mr-2 cursor-pointer">
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
             <Button
               variant="destructive"
-
+              className={"mr-2 cursor-pointer"}
               size="sm"
               onClick={() => confirmDelete(row.original.$id)}
               disabled={deleteMedicineInstructionMutation.isPending}
@@ -147,90 +148,93 @@ export default function MedicineInstructionsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 ">
-      <div className="flex justify-between items-center mb-6 px-10 ">
-        <h1 className="text-3xl font-bold">Medicine Instructions</h1>
-        <Link href="/dashboard/instructions/add">
-          <Button className='cursor-pointer'>
-            <Plus className="mr-2 h-4 w-4" /> Add New Instruction
-          </Button>
-        </Link>
-      </div>
+    <PageContainer>
+      <div className="container mx-auto py-8 ">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Medicine Instructions</h1>
+          <Link href="/dashboard/instructions/add">
+            <Button className='cursor-pointer'>
+              <Plus className="mr-2 h-4 w-4" /> Add New Instruction
+            </Button>
+          </Link>
+        </div>
 
-      {instructions.length === 0 ? (
-        <p className="text-center text-muted-foreground mt-10">No instructions found. Start by adding one!</p>
-      ) : (
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
+        {instructions.length === 0 ? (
+          <p className="text-center text-muted-foreground mt-10">No instructions found. Start by adding one!</p>
+        ) : (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        )}
 
-      <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the medicine instruction
-              and remove its data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteMedicineInstructionMutation.isPending}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={executeDelete}
-              disabled={deleteMedicineInstructionMutation.isPending}
-            >
-              {deleteMedicineInstructionMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                "Continue"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+        <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the medicine instruction
+                and remove its data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleteMedicineInstructionMutation.isPending}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={executeDelete}
+                disabled={deleteMedicineInstructionMutation.isPending}
+              >
+                {deleteMedicineInstructionMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Continue"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+
+    </PageContainer>
   );
 }

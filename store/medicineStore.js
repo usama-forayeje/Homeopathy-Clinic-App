@@ -1,15 +1,40 @@
-import { create } from 'zustand';
+import { medicineService } from "@/services/medicines";
+import { create } from "zustand"
 
 export const useMedicineStore = create((set) => ({
-    medicines: [],
-    isLoadingMedicines: true,
-    medicineError: null,
+  medicines: [],
+  loadingMedicines: false,
+  medicineError: null,
 
-    setMedicines: (medicinesData) => set({ medicines: medicinesData, isLoadingMedicines: false, medicineError: null }),
-    setLoadingMedicines: (loading) => set({ isLoadingMedicines: loading }),
-    setMedicineError: (error) => set({ medicineError: error, isLoadingMedicines: false }),
+  setMedicines: (medicines) => set({ medicines }),
+  setLoadingMedicines: (loading) => set({ loadingMedicines: loading }),
+  setMedicineError: (error) => set({ medicineError: error }),
 
-    // You might add actions for adding/updating/deleting if you want to
-    // directly modify the 'medicines' array in the store after a successful API call
-    // For now, we'll refetch data, which is simpler for small apps.
-}));
+  fetchMedicines: async () => {
+    set({ loadingMedicines: true, medicineError: null });
+    try {
+      const data = await medicineService.getAllMedicines();
+      set({ medicines: data, loadingMedicines: false });
+    } catch (error) {
+      console.error("Failed to fetch medicines:", error);
+      set({ medicineError: error, loadingMedicines: false });
+    }
+  },
+
+  addMedicine: (medicine) =>
+    set((state) => ({
+      medicines: [...state.medicines, medicine],
+    })),
+
+  updateMedicine: (id, updatedMedicine) =>
+    set((state) => ({
+      medicines: state.medicines.map((medicine) =>
+        medicine.$id === id ? { ...medicine, ...updatedMedicine } : medicine,
+      ),
+    })),
+
+  removeMedicine: (id) =>
+    set((state) => ({
+      medicines: state.medicines.filter((medicine) => medicine.$id !== id),
+    })),
+}))

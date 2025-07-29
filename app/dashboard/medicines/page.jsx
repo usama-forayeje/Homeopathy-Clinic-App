@@ -21,7 +21,6 @@ import { ArrowUpDown, Loader2, Plus, Edit, Trash } from "lucide-react";
 import { useAllMedicines, useMedicinesMutations } from "@/hooks/useMedicines";
 import { useMedicineStore } from "@/store/medicineStore";
 
-// Import AlertDialog components
 import {
     AlertDialog,
     AlertDialogAction,
@@ -32,6 +31,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { PageContainer } from "@/components/common/PageContainer";
 
 export default function MedicinesPage() {
     const { data: medicines = [], isLoading, isError, error } = useAllMedicines();
@@ -157,91 +157,93 @@ export default function MedicinesPage() {
     }
 
     return (
-        <div className="container mx-auto py-8 px-10">
-            <div className="flex justify-between items-center mb-6 px-6">
-                <h1 className="text-3xl font-bold ">Medicines</h1>
-                <Link href="/dashboard/medicines/add" >
-                    <Button className="cursor-pointer">
-                        <Plus className="mr-2 h-4 w-4" /> Add New Medicine
-                    </Button>
-                </Link>
-            </div>
+        <PageContainer>
+            <div className="container mx-auto py-8 px-10">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold ">Medicines</h1>
+                    <Link href="/dashboard/medicines/add" >
+                        <Button className="cursor-pointer">
+                            <Plus className="mr-2 h-4 w-4" /> Add New Medicine
+                        </Button>
+                    </Link>
+                </div>
 
-            {medicines.length === 0 ? (
-                <p className="text-center text-muted-foreground mt-10">No medicines found. Start by adding one!</p>
-            ) : (
-                <div className="rounded-md border">
-                    <Table>
-                        <TableHeader>
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map((header) => (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    ))}
-                                </TableRow>
-                            ))}
-                        </TableHeader>
-                        <TableBody>
-                            {table.getRowModel().rows?.length ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={row.getIsSelected() && "selected"}
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
+                {medicines.length === 0 ? (
+                    <p className="text-center text-muted-foreground mt-10">No medicines found. Start by adding one!</p>
+                ) : (
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
+                                {table.getHeaderGroups().map((headerGroup) => (
+                                    <TableRow key={headerGroup.id}>
+                                        {headerGroup.headers.map((header) => (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                            </TableHead>
                                         ))}
                                     </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-24 text-center">
-                                        No results.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-            )}
+                                ))}
+                            </TableHeader>
+                            <TableBody>
+                                {table.getRowModel().rows?.length ? (
+                                    table.getRowModel().rows.map((row) => (
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={row.getIsSelected() && "selected"}
+                                        >
+                                            {row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id}>
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                                            No results.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
 
-            {/* AlertDialog for Delete Confirmation */}
-            <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the medicine
-                            and remove its data from our servers.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel disabled={deleteMedicineMutation.isPending}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={executeDelete}
-                            disabled={deleteMedicineMutation.isPending}
-                        >
-                            {deleteMedicineMutation.isPending ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Deleting...
-                                </>
-                            ) : (
-                                "Continue"
-                            )}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-        </div>
+                {/* AlertDialog for Delete Confirmation */}
+                <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the medicine
+                                and remove its data from our servers.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel disabled={deleteMedicineMutation.isPending}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={executeDelete}
+                                disabled={deleteMedicineMutation.isPending}
+                            >
+                                {deleteMedicineMutation.isPending ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    "Continue"
+                                )}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </div>
+        </PageContainer>
     );
 }
