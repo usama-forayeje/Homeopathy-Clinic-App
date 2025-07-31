@@ -10,16 +10,18 @@ export const patientConsultationSchema = z.object({
     phoneNumber: z.string().min(11, "Valid phone number required"),
     address: z.string().optional(),
     occupation: z.string().optional(),
-    patientId: z.string().min(1, "Patient ID is required"),
+    serialNumber: z.string().min(1, "Serial number is required"),
     bloodGroup: z.string().optional(),
     notes: z.string().optional(),
-    firstConsultationDate: z.string().optional(), // Will be set automatically
+    // ✅ Fixed: firstConsultationDate is required in Appwrite
+    firstConsultationDate: z.string().min(1, "First consultation date is required"),
   }),
 
   // Consultation Details - Aligned with Appwrite schema
   consultationDetails: z.object({
     consultationDate: z.string().min(1, "Consultation date is required"), // datetime
     chamberId: z.string().min(1, "Please select a chamber"),
+    patientId: z.string().optional(), // Will be set automatically
     chiefComplaint: z
       .array(z.string().min(1, "Complaint cannot be empty"))
       .min(1, "At least one chief complaint is required"),
@@ -33,7 +35,7 @@ export const patientConsultationSchema = z.object({
     diagnosis: z.array(z.string().min(1, "Diagnosis cannot be empty")).min(1, "At least one diagnosis is required"),
     O_E: z.string().optional(),
     prescriptions: z
-      .array(z.string()) // Changed to string array to match Appwrite
+      .array(z.string()) // String array to match Appwrite
       .optional(),
     prescriptionNotes: z.string().optional(),
     dosageInstructions: z.array(z.string()).optional(),
@@ -43,17 +45,25 @@ export const patientConsultationSchema = z.object({
     notes: z.string().optional(),
   }),
 
-  // Patient Habits - Aligned with Appwrite schema
+  // ✅ Fixed: Patient Habits - Properly aligned with Appwrite schema
   patientHabits: z
     .array(
       z.object({
         habitDefinitionId: z.string().min(1, "Please select a habit type"),
         value: z.string().min(1, "Value is required"),
-        patientId: z.string().optional(), // Will be set automatically
+        // ✅ Fixed: patientId is required in Appwrite
+        patientId: z.string().min(1, "Patient ID is required"),
         consultationId: z.string().optional(), // Will be set automatically
         notes: z.string().optional(),
-        recordedDate: z.string().optional(), // Will be set automatically
+        // ✅ Fixed: recordedDate is required in Appwrite
+        recordedDate: z.string().min(1, "Recorded date is required"),
       }),
     )
     .optional(),
 })
+
+
+// Individual schemas for separate validation if needed
+export const patientDetailsSchema = patientConsultationSchema.shape.patientDetails
+export const consultationDetailsSchema = patientConsultationSchema.shape.consultationDetails
+export const patientHabitsSchema = patientConsultationSchema.shape.patientHabits

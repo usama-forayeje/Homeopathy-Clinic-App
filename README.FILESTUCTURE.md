@@ -83,3 +83,51 @@ my-homeopathy-clinic-app/
 │       └── consultation-actions.js
 ├── jsconfig.json          # 📝 JavaScript কনফিগারেশন (VS Code এর মতো এডিটরের জন্য)
 └── README.md              # 📄 প্রোজেক্টের ডকুমেন্টেশন ফাইল (এই ফাইলটি)
+
+{
+  "patientDetails": {
+    "name": "রোগীর নাম",
+    "age": 30,
+    "dob": "1995-01-15T00:00:00.000Z",
+    "gender": "Male",
+    "phoneNumber": "01XXXXXXXXX",
+    "address": "গ্রাম, জেলা",
+    "occupation": null,
+    "serialNumber": "P001",
+    "bloodGroup": null,
+    "notes": null,
+    "firstConsultationDate": "2025-07-31T08:00:00.000Z"
+  },
+  "consultationDetails": {
+    "consultationDate": "2025-07-31T08:00:00.000Z",
+    "chamberId": "chamber_id_123",
+    "patientId": "auto_generated_patient_id",
+    "chiefComplaint": ["মাথাব্যথা", "জ্বর"],
+    "symptoms": "শীতলতা, দুর্বলতা",
+    "BP": "120/80",
+    "Pulse": "72",
+    "Temp": "99.5F",
+    "historyOfPresentIllness": "২ দিন ধরে",
+    "familyHistory": null,
+    "otherComplaints": [],
+    "diagnosis": ["সাধারণ ফ্লু"],
+    "O_E": "কিছু পরীক্ষা",
+    "prescriptions": ["medicine_id_abc", "medicine_id_def"],
+    "prescriptionNotes": "খাবার আগে",
+    "dosageInstructions": ["দিনে তিনবার", "খাওয়ার পর"],
+    "dietAndLifestyleAdvice": ["পুষ্টিকর খাবার"],
+    "followUpDate": null,
+    "billAmount": 500,
+    "notes": "পরবর্তী ফলোআপ গুরুত্বপূর্ণ"
+  },
+  "patientHabits": [
+    {
+      "habitDefinitionId": "habit_id_xyz",
+      "value": "ধূমপান",
+      "patientId": "auto_generated_patient_id",
+      "consultationId": "auto_generated_consultation_id",
+      "notes": "দিনে ৫টি",
+      "recordedDate": "2025-07-31T14:09:19.000Z"
+    }
+  ]
+}

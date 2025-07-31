@@ -1,4 +1,7 @@
-import React, { useEffect } from "react";
+// components/forms/PatientDetailsForm.jsx
+"use client";
+
+import React, { useEffect, useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   Card,
@@ -27,14 +30,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowRight, User } from "lucide-react";
 import { VoiceInput } from "../common/VoiceInput";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label"; // Imported Label for RadioGroup
+import { DatePicker } from "../ui/datePicker";
 
 // Static options - NEVER change these
-const GENDER_OPTIONS = ["Male", "Female", "Other"];
+const GENDER_OPTIONS = ["Male", "Female", "Other", "Prefer not to say"];
 const BLOOD_GROUP_OPTIONS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
-// Age calculation hook
+// Age calculation hook - MODIFIED for stability
 export function useAutoAgeCalculation(form) {
   const watchDob = form.watch("patientDetails.dob");
+  const currentAge = form.watch("patientDetails.age");
 
   useEffect(() => {
     if (watchDob) {
@@ -45,29 +52,50 @@ export function useAutoAgeCalculation(form) {
       if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
         age--;
       }
-      if (age >= 0 && age <= 150) {
-        form.setValue("patientDetails.age", age, { shouldValidate: false });
-      } else {
-        form.setValue("patientDetails.age", 0, { shouldValidate: false });
+
+      // Only update if the calculated age is different from the current age in the form
+      // and within a reasonable range (0-150 years)
+      if (age >= 0 && age <= 150 && age !== currentAge) {
+        form.setValue("patientDetails.age", age, { shouldValidate: false, shouldDirty: true });
+      } else if ((age < 0 || age > 150) && currentAge !== 0) { // If calculated age is out of range, set to 0 if not already
+        form.setValue("patientDetails.age", 0, { shouldValidate: false, shouldDirty: true });
       }
+    } else if (currentAge !== 0 && !isNaN(currentAge)) { // If DOB is cleared, clear age to 0, but only if age isn't already 0 or NaN
+      form.setValue("patientDetails.age", 0, { shouldValidate: false, shouldDirty: true });
     }
-  }, [watchDob, form]);
+  }, [watchDob, form, currentAge]); // Added currentAge to dependencies
 }
 
 export function PatientDetailsForm({ onNextTab }) {
   const form = useFormContext();
+  const { trigger, setFocus } = form;
 
-  // Debug logs
-  console.log("PatientDetailsForm render");
-  
+  // Use the auto age calculation hook
   useAutoAgeCalculation(form);
 
-  const watchDob = form.watch("patientDetails.dob");
-  const patientDetailsName = form.watch("patientDetails.name");
-  const patientDetailsAge = form.watch("patientDetails.age");
-  const patientDetailsPhoneNumber = form.watch("patientDetails.phoneNumber");
+  const handleNext = useCallback(async () => {
+    // Validate all required fields in the patientDetails section before proceeding
+    const isValid = await trigger([
+      "patientDetails.patientId", // Even if disabled, if schema requires it, trigger validation
+      "patientDetails.serialNumber",
+      "patientDetails.name",
+      "patientDetails.age",
+      "patientDetails.gender",
+      "patientDetails.phoneNumber",
+      // "patientDetails.firstConsultationDate" // This field is derived/set on submission, so no direct validation needed here.
+    ], { shouldFocus: true }); // shouldFocus to auto-scroll to the first error field
 
-  const isPatientTabComplete = patientDetailsName && patientDetailsAge && patientDetailsPhoneNumber;
+    if (isValid) {
+      onNextTab("consultation");
+    } else {
+      // Manual focus to the first error if trigger fails to focus (as a fallback)
+      const errors = form.formState.errors;
+      const firstErrorField = Object.keys(errors).find(key => key.startsWith("patientDetails."));
+      if (firstErrorField) {
+        setFocus(firstErrorField);
+      }
+    }
+  }, [trigger, onNextTab, form, setFocus]);
 
   return (
     <Card className="border-0 shadow-lg">
@@ -85,6 +113,34 @@ export function PatientDetailsForm({ onNextTab }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
+            name="patientDetails.patientId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">Patient ID</FormLabel>
+                <FormControl>
+                  <Input placeholder="Auto-generated ID" className="h-11" {...field} disabled />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="patientDetails.serialNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">Serial Number *</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g., 001" className="h-11" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="patientDetails.name"
             render={({ field }) => (
               <FormItem>
@@ -99,26 +155,17 @@ export function PatientDetailsForm({ onNextTab }) {
 
           <FormField
             control={form.control}
-            name="patientDetails.patientId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base font-medium">Patient ID *</FormLabel>
-                <FormControl>
-                  <Input placeholder="Auto-generated ID" className="h-11" {...field} disabled />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="patientDetails.dob"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-base font-medium">Date of Birth</FormLabel>
                 <FormControl>
-                  <Input type="date" className="h-11" {...field} />
+                  {/* Using DatePicker component for better UX */}
+                  <DatePicker
+                    value={field.value}
+                    onSelect={field.onChange}
+                    placeholder="Select Date of Birth"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -138,10 +185,11 @@ export function PatientDetailsForm({ onNextTab }) {
                     className="h-11"
                     {...field}
                     onChange={(e) => {
-                      const value = e.target.value === "" ? 0 : Number(e.target.value);
+                      // Allow empty string to clear the input, otherwise convert to number
+                      const value = e.target.value === "" ? "" : Number(e.target.value);
                       field.onChange(value);
                     }}
-                    readOnly={!!watchDob}
+                    readOnly={!!form.watch("patientDetails.dob")} // Make readonly if DOB is present
                   />
                 </FormControl>
                 <FormMessage />
@@ -149,39 +197,29 @@ export function PatientDetailsForm({ onNextTab }) {
             )}
           />
 
-          {/* COMPLETELY SIMPLIFIED Gender Select */}
           <FormField
             control={form.control}
             name="patientDetails.gender"
-            render={({ field }) => {
-              console.log("Gender field render, value:", field.value);
-              return (
-                <FormItem>
-                  <FormLabel className="text-base font-medium">Gender *</FormLabel>
-                  <Select 
-                    onValueChange={(value) => {
-                      console.log("Gender onChange:", value);
-                      field.onChange(value);
-                    }} 
-                    value={field.value || ""}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">Gender *</FormLabel>
+                <FormControl> {/* FormControl wraps RadioGroup directly */}
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    className="flex flex-wrap gap-4 pt-2" // Added pt-2 for spacing
                   >
-                    <FormControl>
-                      <SelectTrigger className="h-11">
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {GENDER_OPTIONS.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
+                    {GENDER_OPTIONS.map((option) => (
+                      <div key={option} className="flex items-center space-x-2">
+                        <RadioGroupItem value={option} id={`gender-${option.toLowerCase().replace(/\s/g, '-')}`} />
+                        <Label htmlFor={`gender-${option.toLowerCase().replace(/\s/g, '-')}`}>{option}</Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
           <FormField
@@ -198,41 +236,6 @@ export function PatientDetailsForm({ onNextTab }) {
             )}
           />
 
-          {/* COMPLETELY SIMPLIFIED Blood Group Select */}
-          <FormField
-            control={form.control}
-            name="patientDetails.bloodGroup"
-            render={({ field }) => {
-              console.log("Blood group field render, value:", field.value);
-              return (
-                <FormItem>
-                  <FormLabel className="text-base font-medium">Blood Group</FormLabel>
-                  <Select 
-                    onValueChange={(value) => {
-                      console.log("Blood group onChange:", value);
-                      field.onChange(value);
-                    }} 
-                    value={field.value || ""}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="h-11">
-                        <SelectValue placeholder="Select blood group" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {BLOOD_GROUP_OPTIONS.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-
           <FormField
             control={form.control}
             name="patientDetails.occupation"
@@ -242,6 +245,34 @@ export function PatientDetailsForm({ onNextTab }) {
                 <FormControl>
                   <VoiceInput component={Input} placeholder="Patient's occupation" className="h-11" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="patientDetails.bloodGroup"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">Blood Group</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || ""} // Ensure controlled component
+                >
+                  <FormControl>
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select blood group" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {BLOOD_GROUP_OPTIONS.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -290,8 +321,7 @@ export function PatientDetailsForm({ onNextTab }) {
         <div className="flex justify-end pt-4">
           <Button
             type="button"
-            onClick={() => onNextTab("consultation")}
-            disabled={!isPatientTabComplete}
+            onClick={handleNext}
             className="px-8"
           >
             Next: Consultation

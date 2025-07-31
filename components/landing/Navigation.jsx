@@ -1,134 +1,191 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/providers/AuthProvider"
-import { Stethoscope, Menu, X, User, Shield } from "lucide-react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ThemeToggle } from "@/components/layout/ThemeToggle"
+import { Button } from "@/components/ui/button"
+import { Stethoscope, Menu, X, LogIn, UserPlus } from "lucide-react"
+import { useAuth } from "@/providers/AuthProvider"
+import { UserAvatarProfile } from "@/components/common/UserAvatarProfile"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
-  const { user, loginWithGoogle } = useAuth()
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { user, loginWithGoogle, logout, loading } = useAuth()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const navItems = [
-    { name: "হোম", href: "#home" },
-    { name: "বৈশিষ্ট্য", href: "#features" },
-    { name: "সেবাসমূহ", href: "#services" },
-    { name: "যোগাযোগ", href: "#contact" },
-    { name: "সম্পর্কে", href: "#about" },
+    { name: "Home", href: "#home" },
+    { name: "Features", href: "#features" },
+    { name: "About", href: "#about" },
+    { name: "Contact", href: "#contact" },
   ]
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-      <div className="container mx-auto px-4">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200" : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="p-2 bg-primary rounded-lg">
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-xl flex items-center justify-center">
               <Stethoscope className="h-6 w-6 text-white" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-gray-900 dark:text-white">Popular Homeo Care</span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">আধুনিক হোমিওপ্যাথিক সেবা</span>
-            </div>
-          </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+              HomeoClinic Pro
+            </span>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
 
-          {/* Right Side Actions */}
+          {/* Auth Section */}
           <div className="hidden md:flex items-center space-x-4">
-            <ThemeToggle />
-
-            {user ? (
-              <div className="flex items-center space-x-2">
-                {user.labels?.includes("admin") && (
-                  <Button variant="outline" asChild>
-                    <Link href="/dashboard">
-                      <Shield className="mr-2 h-4 w-4" />
-                      ড্যাশবোর্ড
-                    </Link>
+            {loading ? (
+              <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <UserAvatarProfile user={user} className="h-10 w-10" />
                   </Button>
-                )}
-                <Button variant="ghost" size="icon">
-                  <User className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-medium">{user.name}</p>
+                      <p className="w-[200px] truncate text-sm text-muted-foreground">{user.email}</p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  {user.labels?.includes("admin") && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={loginWithGoogle}
+                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 bg-transparent"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+                <Button
+                  onClick={loginWithGoogle}
+                  className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Get Started
                 </Button>
               </div>
-            ) : (
-              <Button onClick={loginWithGoogle} className="bg-primary hover:bg-primary/90">
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
-                  <path
-                    fill="currentColor"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  />
-                </svg>
-                লগইন
-              </Button>
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col space-y-4">
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium px-2 py-1"
-                  onClick={() => setIsOpen(false)}
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                <ThemeToggle />
+              <div className="pt-4 border-t border-gray-200">
                 {user ? (
-                  <div className="flex items-center space-x-2">
+                  <div className="space-y-2">
+                    <div className="px-3 py-2">
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
                     {user.labels?.includes("admin") && (
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href="/dashboard">
-                          <Shield className="mr-2 h-4 w-4" />
-                          ড্যাশবোর্ড
-                        </Link>
-                      </Button>
+                      <Link
+                        href="/dashboard"
+                        className="block px-3 py-2 text-blue-600 font-medium"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
                     )}
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        logout()
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="w-full mx-3"
+                    >
+                      Log out
+                    </Button>
                   </div>
                 ) : (
-                  <Button onClick={loginWithGoogle} size="sm">
-                    লগইন
-                  </Button>
+                  <div className="space-y-2 px-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        loginWithGoogle()
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="w-full"
+                    >
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Sign In
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        loginWithGoogle()
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="w-full bg-gradient-to-r from-blue-600 to-green-600"
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Get Started
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>

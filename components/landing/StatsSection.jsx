@@ -1,53 +1,59 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Users, FileText, Award, Clock } from "lucide-react"
 
 export function StatsSection() {
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
-
   const stats = [
     {
-      number: "১০০০+",
-      label: "সন্তুষ্ট ডাক্তার",
-      description: "দেশব্যাপী ব্যবহারকারী",
+      icon: Users,
+      number: "10,000+",
+      label: "Patients Managed",
+      description: "Successfully managing patient records",
     },
     {
-      number: "৫০,০০০+",
-      label: "রোগীর রেকর্ড",
-      description: "নিরাপদে সংরক্ষিত",
+      icon: FileText,
+      number: "50,000+",
+      label: "Consultations",
+      description: "Digital consultations recorded",
     },
     {
-      number: "৯৯.৯%",
-      label: "আপটাইম",
-      description: "নির্ভরযোগ্য সেবা",
+      icon: Award,
+      number: "99.9%",
+      label: "Uptime",
+      description: "Reliable system availability",
     },
     {
-      number: "২৪/৭",
-      label: "সাপোর্ট",
-      description: "সর্বদা সহায়তা",
+      icon: Clock,
+      number: "24/7",
+      label: "Support",
+      description: "Round-the-clock assistance",
     },
   ]
 
   return (
-    <section className="py-16 bg-gradient-to-r from-primary/5 via-blue-50 to-green-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <section className="py-20 bg-gradient-to-r from-blue-600 to-green-600">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">Trusted by Healthcare Professionals</h2>
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+            Join thousands of homeopathic practitioners who trust our platform for their daily operations
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <Card
               key={index}
-              className={`text-center border-0 shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm transition-all duration-500 delay-${index * 100} hover:scale-105 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
+              className="bg-white/10 backdrop-blur-md border-white/20 text-center group hover:bg-white/20 transition-all duration-300"
             >
-              <CardContent className="p-6">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.number}</div>
-                <div className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{stat.label}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">{stat.description}</div>
+              <CardContent className="p-8">
+                <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <stat.icon className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-4xl font-bold text-white mb-2">{stat.number}</div>
+                <div className="text-xl font-semibold text-white mb-2">{stat.label}</div>
+                <div className="text-blue-100 text-sm">{stat.description}</div>
               </CardContent>
             </Card>
           ))}

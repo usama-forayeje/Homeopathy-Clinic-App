@@ -1,583 +1,955 @@
-# 🏥 Popular Homeo Care - Next-Level Homeopathic Clinic Management System
+# 🏥 Advanced Homeopathy Clinic Management System
 
-A **premium, professional-grade** homeopathic clinic management system built with **Next.js 14**, **React 18**, and **Appwrite**. This system provides comprehensive patient management, consultation tracking, prescription handling, and advanced features designed specifically for homeopathic practitioners.
+A comprehensive, next-level homeopathy clinic management application built with **Next.js 15**, **React 19**, **Appwrite**, and modern UI components.
 
-## 🚀 Technology Stack
+## 🌟 Features
 
-- **Frontend:** Next.js 14 (App Router), React 18, JSX
-- **UI Library:** Shadcn/ui, Tailwind CSS
-- **Data Fetching:** TanStack Query (React Query)
-- **Backend:** Appwrite (BaaS)
-- **Authentication:** Google OAuth (Appwrite Auth)
-- **State Management:** React Query + Context API + Zustand
-- **Animations:** Framer Motion, Tailwind CSS Animations
-- **Voice Input:** Web Speech API
-- **QR Code:** QR Code Generation for Prescriptions
-- **Tables:** TanStack Table for advanced data display
-- **Notifications:** Sonner for toast notifications
-- **Icon Library:** Lucide React
+### 🔐 Authentication & Authorization
+- **Google OAuth Integration** - Seamless login with Google accounts
+- **Role-based Access Control** - Admin and Patient roles
+- **Secure Session Management** - JWT-based authentication
 
-## 📋 Core Features
+### 👥 Patient Management
+- **Comprehensive Patient Profiles** - Complete demographic and medical information
+- **Advanced Search & Filtering** - Find patients quickly with multiple filters
+- **Patient History Tracking** - Complete medical history and consultation records
+- **Habit Tracking System** - Monitor patient lifestyle and health patterns
 
-### 🧑‍⚕️ Advanced Patient Management
-- Complete patient profile creation and editing
-- Unique phone number and serial number identification
-- Comprehensive patient history tracking
-- Advanced search and filtering with debounced input
-- Patient timeline and consultation history
-- Professional patient cards with quick actions
-- Infinity scroll for large patient lists
-- Smart age calculation from date of birth
+### 🩺 Consultation Management
+- **Detailed Consultation Forms** - Comprehensive medical examination records
+- **Voice Input Support** - English and Bengali voice recognition
+- **Vital Signs Tracking** - BP, Pulse, Temperature monitoring
+- **Chief Complaints Management** - Multiple complaint tracking
 
-### 📋 Comprehensive Consultation System
-- Detailed consultation records with tabbed interface
-- Chief complaint and symptom tracking
-- Medical history and family history
-- General and systemic examination
-- Disease diagnosis and treatment planning
-- Follow-up date scheduling
-- Chamber-based billing system
-- Professional consultation history table
+### 💊 Prescription System
+- **Medicine Database** - Comprehensive homeopathic medicine catalog
+- **Dosage Instructions** - Predefined and custom instruction templates
+- **Prescription History** - Complete medication tracking
+- **Print-ready Prescriptions** - Professional prescription formatting
 
-### 💊 Advanced Prescription Management
-- Digital prescription creation
-- Medicine name, potency, and dosage
-- Treatment duration tracking
-- Prescription history
-- QR code enabled prescriptions
-- Patients can scan QR to view prescriptions
-- Professional print layouts
+### 🏢 Chamber Management
+- **Multiple Chamber Support** - Manage multiple clinic locations
+- **Chamber-specific Consultations** - Location-based consultation tracking
+- **Chamber Switching** - Easy switching between locations
 
-### 🧘 Dynamic Patient Habits Tracking
-- Configurable habit definitions by doctors
-- Multiple input types:
-  - Boolean (Yes/No)
-  - Scale (1-10 rating)
-  - Select dropdown options
-  - Text and number inputs
-- Consultation-based habit tracking
-- Habit trend analysis and visualization
-- Professional habit display cards
+### 📊 Analytics & Reporting
+- **Patient Statistics** - Comprehensive patient analytics
+- **Consultation Reports** - Detailed consultation insights
+- **Revenue Tracking** - Financial reporting and analytics
+- **Export Capabilities** - Data export in multiple formats
 
-### 🏥 Multi-Chamber Management
-- Multiple chamber support
-- Chamber switching functionality
-- Chamber-based reporting
-- Contact information and opening hours
-- Professional chamber selection interface
+### 🎨 Modern UI/UX
+- **Responsive Design** - Mobile-first approach
+- **Dark/Light Theme** - Theme switching capability
+- **Advanced Components** - shadcn/ui component library
+- **Smooth Animations** - Framer Motion animations
+- **Professional Landing Page** - Marketing-focused homepage
 
-### 🎤 Voice Input Integration
-- Bengali voice recognition
-- All text fields support voice input
-- Hands-free data entry
-- Professional voice input UI
+## 🛠️ Technology Stack
 
-### 📊 Advanced Data Tables
-- TanStack Table integration
-- Sortable and filterable columns
-- Pagination and infinite scroll
-- Professional table layouts
-- Export functionality
-- Advanced search capabilities
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Backend**: Appwrite (BaaS)
+- **UI Library**: shadcn/ui, Tailwind CSS
+- **State Management**: Zustand
+- **Data Fetching**: TanStack Query (React Query)
+- **Form Handling**: React Hook Form + Zod
+- **Authentication**: Appwrite Auth with Google OAuth
+- **Voice Recognition**: Web Speech API
+- **Icons**: Lucide React
 
-## 🎯 Technical Excellence
+## 📋 Prerequisites
 
-### 🏗️ Architecture
-- **Business-class UI/UX** with shadcn/ui components
-- **Responsive design** optimized for all devices
-- **TanStack Query** for efficient data fetching and caching
-- **Professional animations** and smooth transitions
-- **Type-safe development** approach
-- **Performance optimized** with intelligent caching
-- **Modular component architecture**
+- Node.js 18+ and npm/yarn
+- Appwrite Cloud account or self-hosted Appwrite instance
+- Google OAuth credentials
+- Modern web browser with speech recognition support
 
-### 🔧 Advanced Hooks & Services
-- Custom React hooks for all data operations
-- Reusable service layer for Appwrite integration
-- Optimistic updates for better UX
-- Error handling and retry mechanisms
-- Professional loading states
+## 🚀 Installation & Setup
 
-### 🎨 UI/UX Features
-- **Dark/Light mode** with system detection
-- **Sticky headers** across all pages
-- **Professional sidebar** with chamber switching
-- **Command palette** (Ctrl+K) for quick navigation
-- **Breadcrumb navigation**
-- **Toast notifications** for user feedback
-- **Loading skeletons** for better perceived performance
-
-## 📊 Database Schema
-
-### Patients Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  name: string (required),
-  age: integer (required),
-  dob: datetime (optional),
-  gender: enum (required), // "Male", "Female", "Other"
-  address: string (optional),
-  phoneNumber: string (required, unique),
-  occupation: string (optional),
-  patientId: string (required, unique), // Serial number
-  bloodGroup: string (optional),
-  notes: string (optional),
-  firstConsultationDate: datetime (required),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### Consultations Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  patientId: string (relationship to Patients, required),
-  chamberId: string (relationship to Chambers, required),
-  consultationDate: datetime (required),
-  chiefComplaint: string[] (required),
-  otherComplaints: string[] (optional),
-  symptoms: string (optional),
-  BP: string (optional),
-  Pulse: string (optional),
-  Temp: string (optional),
-  O_E: string (optional), // On Examination
-  historyOfPresentIllness: string (optional),
-  familyHistory: string (optional),
-  diagnosis: string[] (required),
-  prescriptions: string[] (optional),
-  dosageInstructions: string[] (optional),
-  dietAndLifestyleAdvice: string[] (optional),
-  prescriptionNotes: string (optional),
-  notes: string (optional),
-  followUpDate: datetime (optional),
-  billAmount: double (optional),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### Chambers Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  chamberName: string (required),
-  location: string (required),
-  contactNumber: string (optional),
-  email: string (optional),
-  openingHours: string (optional),
-  consultationFee: double (optional),
-  isActive: boolean (required, default: true),
-  notes: string (optional),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### Medicines Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  medicineName: string (required),
-  potency: string (optional),
-  category: string (optional),
-  manufacturer: string (optional),
-  description: string (optional),
-  isActive: boolean (required, default: true),
-  createdAt: datetime (required),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### MedicineInstructions Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  instructionText: string (required),
-  category: string (optional),
-  isCommon: boolean (default: false),
-  isActive: boolean (required, default: true),
-  createdAt: datetime (required),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### HabitDefinitions Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  name: string (required),
-  description: string (optional),
-  inputType: enum (required), // text, number, boolean, scale, select
-  options: string (optional), // JSON array for select type
-  category: string (optional),
-  isActive: boolean (required, default: true),
-  createdAt: datetime (required),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-### PatientsHabits Collection
-\`\`\`javascript
-{
-  $id: string (pk),
-  habitDefinitionId: string (relationship to HabitDefinitions, required),
-  patientId: string (relationship to Patients, required),
-  consultationId: string (relationship to Consultations, optional),
-  value: string (required),
-  notes: string (optional),
-  recordedDate: datetime (required),
-  $createdAt: datetime,
-  $updatedAt: datetime
-}
-\`\`\`
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- Node.js 18+ installed
-- Appwrite server setup
-- Google OAuth app created
-
-### 1. Clone Project & Install Dependencies
-
+### 1. Clone the Repository
 \`\`\`bash
-git clone <repository-url>
-cd popular-homeo-care
-npm install
+git clone https://github.com/your-username/homeopathy-clinic-app.git
+cd homeopathy-clinic-app
 \`\`\`
 
-### 2. Environment Variables Setup
+### 2. Install Dependencies
+\`\`\`bash
+npm install
+# or
+yarn install
+\`\`\`
 
-Create `.env.local` file:
+### 3. Environment Variables
+Create a `.env.local` file in the root directory:
 
 \`\`\`env
 # Appwrite Configuration
-NEXT_PUBLIC_APPWRITE_ENDPOINT=https://your-appwrite-endpoint
-NEXT_PUBLIC_APPWRITE_PROJECT_ID=your-project-id
-NEXT_PUBLIC_APPWRITE_DATABASE_ID=your-database-id
+NEXT_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_project_id
+APPWRITE_API_SECRET_KEY=your_api_secret_key
+
+# Database Configuration
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=your_database_id
 
 # Collection IDs
-NEXT_PUBLIC_COLLECTION_PATIENTS_ID=patients-collection-id
-NEXT_PUBLIC_COLLECTION_CONSULTATIONS_ID=consultations-collection-id
-NEXT_PUBLIC_COLLECTION_PATIENT_HABITS_ID=patient-habits-collection-id
-NEXT_PUBLIC_COLLECTION_HABIT_DEFINITIONS_ID=habit-definitions-collection-id
-NEXT_PUBLIC_COLLECTION_MEDICINES_ID=medicines-collection-id
-NEXT_PUBLIC_COLLECTION_MEDICINEINSTRUCTIONS_ID=medicine-instructions-collection-id
-NEXT_PUBLIC_COLLECTION_CHAMBERS_ID=chambers-collection-id
+NEXT_PUBLIC_COLLECTION_PATIENTS_ID=patients_collection_id
+NEXT_PUBLIC_COLLECTION_CONSULTATIONS_ID=consultations_collection_id
+NEXT_PUBLIC_COLLECTION_CHAMBERS_ID=chambers_collection_id
+NEXT_PUBLIC_COLLECTION_MEDICINES_ID=medicines_collection_id
+NEXT_PUBLIC_COLLECTION_MEDICINEINSTRUCTIONS_ID=instructions_collection_id
+NEXT_PUBLIC_COLLECTION_HABIT_DEFINITIONS_ID=habit_definitions_collection_id
+NEXT_PUBLIC_COLLECTION_PATIENT_HABITS_ID=patient_habits_collection_id
 
-# Google OAuth
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
+# Optional: Analytics & Monitoring
+NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
 \`\`\`
 
-### 3. Appwrite Database Setup
-
-#### Create Database
-1. Login to Appwrite console
-2. Create new project
-3. Create database
-
-#### Create Collections
-
-##### Patients Collection
-\`\`\`bash
-Collection ID: patients
-Attributes:
-- name (string, 255, required)
-- age (integer, required)
-- dob (datetime, optional)
-- gender (enum, required) // Male, Female, Other
-- address (string, 500, optional)
-- phoneNumber (string, 15, required, unique)
-- occupation (string, 100, optional)
-- patientId (string, 50, required, unique)
-- bloodGroup (string, 10, optional)
-- notes (string, 1000, optional)
-- firstConsultationDate (datetime, required)
-
-Indexes:
-- phoneNumber (unique)
-- patientId (unique)
-- name (fulltext)
-- firstConsultationDate (key)
-\`\`\`
-
-##### Consultations Collection
-\`\`\`bash
-Collection ID: consultations
-Attributes:
-- patientId (string, 255, required)
-- chamberId (string, 255, required)
-- consultationDate (datetime, required)
-- chiefComplaint (string[], required)
-- otherComplaints (string[], optional)
-- symptoms (string, 2000, optional)
-- BP (string, 20, optional)
-- Pulse (string, 20, optional)
-- Temp (string, 20, optional)
-- O_E (string, 2000, optional)
-- historyOfPresentIllness (string, 2000, optional)
-- familyHistory (string, 1000, optional)
-- diagnosis (string[], required)
-- prescriptions (string[], optional)
-- dosageInstructions (string[], optional)
-- dietAndLifestyleAdvice (string[], optional)
-- prescriptionNotes (string, 1000, optional)
-- notes (string, 1000, optional)
-- followUpDate (datetime, optional)
-- billAmount (double, optional)
-
-Indexes:
-- patientId
-- consultationDate
-- chamberId
-- followUpDate (key)
-\`\`\`
-
-##### Chambers Collection
-\`\`\`bash
-Collection ID: chambers
-Attributes:
-- chamberName (string, 100, required)
-- location (string, 200, required)
-- contactNumber (string, 15, optional)
-- email (string, 100, optional)
-- openingHours (string, 200, optional)
-- consultationFee (double, optional)
-- isActive (boolean, required, default: true)
-- notes (string, 500, optional)
-
-Indexes:
-- chamberName (key)
-- isActive (key)
-\`\`\`
-
-##### Medicines Collection
-\`\`\`bash
-Collection ID: medicines
-Attributes:
-- medicineName (string, 200, required)
-- potency (string, 50, optional)
-- category (string, 100, optional)
-- manufacturer (string, 100, optional)
-- description (string, 500, optional)
-- isActive (boolean, required, default: true)
-- createdAt (datetime, required)
-
-Indexes:
-- medicineName (fulltext)
-- category (key)
-- isActive (key)
-\`\`\`
-
-##### MedicineInstructions Collection
-\`\`\`bash
-Collection ID: medicineInstructions
-Attributes:
-- instructionText (string, 300, required)
-- category (string, 100, optional)
-- isCommon (boolean, default: false)
-- isActive (boolean, required, default: true)
-- createdAt (datetime, required)
-
-Indexes:
-- instructionText (fulltext)
-- isCommon (key)
-- isActive (key)
-\`\`\`
-
-##### HabitDefinitions Collection
-\`\`\`bash
-Collection ID: habitDefinitions
-Attributes:
-- name (string, 100, required)
-- description (string, 300, optional)
-- inputType (enum, required) // text, number, boolean, scale, select
-- options (string, 1000, optional) // JSON array for select type
-- category (string, 100, optional)
-- isActive (boolean, required, default: true)
-- createdAt (datetime, required)
-
-Indexes:
-- name (key)
-- category (key)
-- isActive (key)
-\`\`\`
-
-##### PatientsHabits Collection
-\`\`\`bash
-Collection ID: patientsHabits
-Attributes:
-- habitDefinitionId (string, 255, required)
-- patientId (string, 255, required)
-- consultationId (string, 255, optional)
-- value (string, 500, required)
-- notes (string, 500, optional)
-- recordedDate (datetime, required)
-
-Indexes:
-- patientId (key)
-- habitDefinitionId (key)
-- consultationId (key)
-- recordedDate (key)
-\`\`\`
-
-## 🚀 Run Application
-
+### 4. Run Development Server
 \`\`\`bash
 npm run dev
+# or
+yarn dev
 \`\`\`
 
-Application will start at `http://localhost:3000`.
+Visit `http://localhost:3000` to see the application.
 
-## 📁 Project Structure
+## 🗄️ Appwrite Configuration
 
+### Database Setup
+
+Create a new database in your Appwrite console and note the Database ID.
+
+### Collections Configuration
+
+#### 1. **Patients Collection**
+\`\`\`json
+{
+  "name": "patients",
+  "attributes": [
+    {
+      "key": "name",
+      "type": "string",
+      "size": 255,
+      "required": true
+    },
+    {
+      "key": "patientId",
+      "type": "string",
+      "size": 50,
+      "required": true
+    },
+    {
+      "key": "age",
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 150
+    },
+    {
+      "key": "dob",
+      "type": "datetime",
+      "required": false
+    },
+    {
+      "key": "gender",
+      "type": "string",
+      "size": 20,
+      "required": true
+    },
+    {
+      "key": "phoneNumber",
+      "type": "string",
+      "size": 20,
+      "required": true
+    },
+    {
+      "key": "address",
+      "type": "string",
+      "size": 1000,
+      "required": false
+    },
+    {
+      "key": "occupation",
+      "type": "string",
+      "size": 100,
+      "required": false
+    },
+    {
+      "key": "bloodGroup",
+      "type": "string",
+      "size": 10,
+      "required": false
+    },
+    {
+      "key": "notes",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    },
+    {
+      "key": "firstConsultationDate",
+      "type": "datetime",
+      "required": false
+    },
+    {
+      "key": "isActive",
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "key": "idx_patientId",
+      "type": "unique",
+      "attributes": ["patientId"]
+    },
+    {
+      "key": "idx_phoneNumber",
+      "type": "key",
+      "attributes": ["phoneNumber"]
+    },
+    {
+      "key": "idx_name",
+      "type": "fulltext",
+      "attributes": ["name"]
+    },
+    {
+      "key": "idx_gender",
+      "type": "key",
+      "attributes": ["gender"]
+    },
+    {
+      "key": "idx_active",
+      "type": "key",
+      "attributes": ["isActive"]
+    },
+    {
+      "key": "idx_firstConsultation",
+      "type": "key",
+      "attributes": ["firstConsultationDate"]
+    }
+  ]
+}
 \`\`\`
-popular-homeo-care/
+
+#### 2. **Consultations Collection**
+\`\`\`json
+{
+  "name": "consultations",
+  "attributes": [
+    {
+      "key": "patientId",
+      "type": "string",
+      "size": 50,
+      "required": true
+    },
+    {
+      "key": "chamberId",
+      "type": "string",
+      "size": 50,
+      "required": true
+    },
+    {
+      "key": "consultationDate",
+      "type": "datetime",
+      "required": true
+    },
+    {
+      "key": "consultationTime",
+      "type": "string",
+      "size": 10,
+      "required": false
+    },
+    {
+      "key": "chiefComplaint",
+      "type": "string",
+      "size": 5000,
+      "required": true,
+      "array": true
+    },
+    {
+      "key": "symptoms",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    },
+    {
+      "key": "BP",
+      "type": "string",
+      "size": 20,
+      "required": false
+    },
+    {
+      "key": "Pulse",
+      "type": "string",
+      "size": 20,
+      "required": false
+    },
+    {
+      "key": "Temp",
+      "type": "string",
+      "size": 20,
+      "required": false
+    },
+    {
+      "key": "historyOfPresentIllness",
+      "type": "string",
+      "size": 3000,
+      "required": false
+    },
+    {
+      "key": "familyHistory",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    },
+    {
+      "key": "otherComplaints",
+      "type": "string",
+      "size": 1000,
+      "required": false,
+      "array": true
+    },
+    {
+      "key": "diagnosis",
+      "type": "string",
+      "size": 1000,
+      "required": true,
+      "array": true
+    },
+    {
+      "key": "O_E",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    },
+    {
+      "key": "prescriptions",
+      "type": "string",
+      "size": 10000,
+      "required": false,
+      "array": true
+    },
+    {
+      "key": "prescriptionNotes",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    },
+    {
+      "key": "dosageInstructions",
+      "type": "string",
+      "size": 1000,
+      "required": false,
+      "array": true
+    },
+    {
+      "key": "dietAndLifestyleAdvice",
+      "type": "string",
+      "size": 1000,
+      "required": false,
+      "array": true
+    },
+    {
+      "key": "followUpDate",
+      "type": "datetime",
+      "required": false
+    },
+    {
+      "key": "billAmount",
+      "type": "double",
+      "required": false,
+      "min": 0
+    },
+    {
+      "key": "notes",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    }
+  ],
+  "indexes": [
+    {
+      "key": "idx_patientId",
+      "type": "key",
+      "attributes": ["patientId"]
+    },
+    {
+      "key": "idx_chamberId",
+      "type": "key",
+      "attributes": ["chamberId"]
+    },
+    {
+      "key": "idx_consultationDate",
+      "type": "key",
+      "attributes": ["consultationDate"],
+      "orders": ["DESC"]
+    },
+    {
+      "key": "idx_patient_date",
+      "type": "key",
+      "attributes": ["patientId", "consultationDate"],
+      "orders": ["ASC", "DESC"]
+    },
+    {
+      "key": "idx_followUp",
+      "type": "key",
+      "attributes": ["followUpDate"]
+    }
+  ]
+}
+\`\`\`
+
+#### 3. **Chambers Collection**
+\`\`\`json
+{
+  "name": "chambers",
+  "attributes": [
+    {
+      "key": "chamberName",
+      "type": "string",
+      "size": 255,
+      "required": true
+    },
+    {
+      "key": "location",
+      "type": "string",
+      "size": 500,
+      "required": true
+    },
+    {
+      "key": "contactNumber",
+      "type": "string",
+      "size": 20,
+      "required": false
+    },
+    {
+      "key": "operatingHours",
+      "type": "string",
+      "size": 200,
+      "required": false
+    },
+    {
+      "key": "description",
+      "type": "string",
+      "size": 1000,
+      "required": false
+    },
+    {
+      "key": "isActive",
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "key": "idx_chamberName",
+      "type": "unique",
+      "attributes": ["chamberName"]
+    },
+    {
+      "key": "idx_active",
+      "type": "key",
+      "attributes": ["isActive"]
+    },
+    {
+      "key": "idx_location",
+      "type": "fulltext",
+      "attributes": ["location"]
+    }
+  ]
+}
+\`\`\`
+
+#### 4. **Medicines Collection**
+\`\`\`json
+{
+  "name": "medicines",
+  "attributes": [
+    {
+      "key": "medicineName",
+      "type": "string",
+      "size": 255,
+      "required": true
+    },
+    {
+      "key": "potency",
+      "type": "string",
+      "size": 50,
+      "required": false
+    },
+    {
+      "key": "medicineType",
+      "type": "string",
+      "size": 100,
+      "required": false
+    },
+    {
+      "key": "manufacturer",
+      "type": "string",
+      "size": 200,
+      "required": false
+    },
+    {
+      "key": "description",
+      "type": "string",
+      "size": 1000,
+      "required": false
+    },
+    {
+      "key": "indications",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    },
+    {
+      "key": "dosageForm",
+      "type": "string",
+      "size": 100,
+      "required": false
+    },
+    {
+      "key": "isActive",
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "key": "idx_medicineName",
+      "type": "fulltext",
+      "attributes": ["medicineName"]
+    },
+    {
+      "key": "idx_potency",
+      "type": "key",
+      "attributes": ["potency"]
+    },
+    {
+      "key": "idx_type",
+      "type": "key",
+      "attributes": ["medicineType"]
+    },
+    {
+      "key": "idx_active",
+      "type": "key",
+      "attributes": ["isActive"]
+    },
+    {
+      "key": "idx_manufacturer",
+      "type": "key",
+      "attributes": ["manufacturer"]
+    }
+  ]
+}
+\`\`\`
+
+#### 5. **Medicine Instructions Collection**
+\`\`\`json
+{
+  "name": "medicineInstructions",
+  "attributes": [
+    {
+      "key": "instructionText",
+      "type": "string",
+      "size": 500,
+      "required": true
+    },
+    {
+      "key": "instructionType",
+      "type": "string",
+      "size": 100,
+      "required": false
+    },
+    {
+      "key": "language",
+      "type": "string",
+      "size": 10,
+      "required": false,
+      "default": "en"
+    },
+    {
+      "key": "category",
+      "type": "string",
+      "size": 100,
+      "required": false
+    },
+    {
+      "key": "isActive",
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "key": "idx_instructionText",
+      "type": "fulltext",
+      "attributes": ["instructionText"]
+    },
+    {
+      "key": "idx_type",
+      "type": "key",
+      "attributes": ["instructionType"]
+    },
+    {
+      "key": "idx_language",
+      "type": "key",
+      "attributes": ["language"]
+    },
+    {
+      "key": "idx_active",
+      "type": "key",
+      "attributes": ["isActive"]
+    },
+    {
+      "key": "idx_category",
+      "type": "key",
+      "attributes": ["category"]
+    }
+  ]
+}
+\`\`\`
+
+#### 6. **Habit Definitions Collection**
+\`\`\`json
+{
+  "name": "habitDefinitions",
+  "attributes": [
+    {
+      "key": "name",
+      "type": "string",
+      "size": 255,
+      "required": true
+    },
+    {
+      "key": "description",
+      "type": "string",
+      "size": 1000,
+      "required": false
+    },
+    {
+      "key": "inputType",
+      "type": "string",
+      "size": 50,
+      "required": true
+    },
+    {
+      "key": "options",
+      "type": "string",
+      "size": 2000,
+      "required": false
+    },
+    {
+      "key": "category",
+      "type": "string",
+      "size": 100,
+      "required": false
+    },
+    {
+      "key": "unit",
+      "type": "string",
+      "size": 50,
+      "required": false
+    },
+    {
+      "key": "isActive",
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "key": "idx_name",
+      "type": "unique",
+      "attributes": ["name"]
+    },
+    {
+      "key": "idx_inputType",
+      "type": "key",
+      "attributes": ["inputType"]
+    },
+    {
+      "key": "idx_category",
+      "type": "key",
+      "attributes": ["category"]
+    },
+    {
+      "key": "idx_active",
+      "type": "key",
+      "attributes": ["isActive"]
+    }
+  ]
+}
+\`\`\`
+
+#### 7. **Patient Habits Collection**
+\`\`\`json
+{
+  "name": "patientHabits",
+  "attributes": [
+    {
+      "key": "patientId",
+      "type": "string",
+      "size": 50,
+      "required": true
+    },
+    {
+      "key": "habitDefinitionId",
+      "type": "string",
+      "size": 50,
+      "required": true
+    },
+    {
+      "key": "value",
+      "type": "string",
+      "size": 500,
+      "required": true
+    },
+    {
+      "key": "notes",
+      "type": "string",
+      "size": 1000,
+      "required": false
+    },
+    {
+      "key": "recordedDate",
+      "type": "datetime",
+      "required": true
+    },
+    {
+      "key": "consultationId",
+      "type": "string",
+      "size": 50,
+      "required": false
+    }
+  ],
+  "indexes": [
+    {
+      "key": "idx_patientId",
+      "type": "key",
+      "attributes": ["patientId"]
+    },
+    {
+      "key": "idx_habitDefinitionId",
+      "type": "key",
+      "attributes": ["habitDefinitionId"]
+    },
+    {
+      "key": "idx_recordedDate",
+      "type": "key",
+      "attributes": ["recordedDate"],
+      "orders": ["DESC"]
+    },
+    {
+      "key": "idx_patient_habit",
+      "type": "key",
+      "attributes": ["patientId", "habitDefinitionId"]
+    },
+    {
+      "key": "idx_consultation",
+      "type": "key",
+      "attributes": ["consultationId"]
+    }
+  ]
+}
+\`\`\`
+
+### Authentication Setup
+
+#### 1. **Google OAuth Configuration**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URIs:
+   - `https://cloud.appwrite.io/v1/account/sessions/oauth2/callback/google/[PROJECT_ID]`
+   - `http://localhost:3000/auth/callback` (for development)
+
+#### 2. **Appwrite Auth Settings**
+1. In Appwrite Console, go to Auth → Settings
+2. Add Google as OAuth2 Provider
+3. Enter your Google Client ID and Client Secret
+4. Configure success and failure URLs:
+   - Success: `http://localhost:3000/dashboard` (development)
+   - Failure: `http://localhost:3000/auth/failure`
+
+#### 3. **User Roles & Labels**
+- **Admin Users**: Add label `admin` to user accounts that should have dashboard access
+- **Patient Users**: No labels required (default patient role)
+
+### Permissions Configuration
+
+For each collection, set the following permissions:
+
+#### Read Permissions:
+- `users` (authenticated users can read)
+- `role:admin` (admin users have full access)
+
+#### Write Permissions:
+- `role:admin` (only admin users can create/update/delete)
+
+#### Security Rules:
+- Enable **Document Security** for all collections
+- Set appropriate **Attribute Security** for sensitive fields
+
+## 🎯 Usage Guide
+
+### For Administrators
+
+1. **Login**: Use Google OAuth to sign in
+2. **Dashboard Access**: Ensure your account has the `admin` label
+3. **Patient Management**: 
+   - Add new patients with comprehensive forms
+   - Search and filter existing patients
+   - View detailed patient profiles
+4. **Consultation Management**:
+   - Create detailed consultation records
+   - Track patient history and progress
+   - Manage prescriptions and treatments
+5. **System Management**:
+   - Manage chambers, medicines, and instructions
+   - Configure habit definitions
+   - Monitor system analytics
+
+### For Patients
+
+1. **Login**: Use Google OAuth to sign in
+2. **Profile Access**: View personal medical records
+3. **Appointment History**: Review past consultations
+4. **Prescription Access**: View current and past prescriptions
+
+## 🔧 Development
+
+### Project Structure
+\`\`\`
+homeopathy-clinic-app/
 ├── app/                    # Next.js App Router
-│   ├── dashboard/         # Main application
-│   │   ├── patients/      # Patient management
-│   │   │   ├── new/       # Add new patient
-│   │   │   └── [id]/      # Patient details & edit
-│   │   ├── consultations/ # Consultation management
-│   │   ├── chambers/      # Chamber management
-│   │   ├── medicines/     # Medicine management
-│   │   └── habit-definitions/ # Habit definitions
-│   ├── api/               # API routes
-│   ├── layout.jsx         # Root layout
-│   └── page.jsx           # Landing page
+│   ├── (auth)/            # Authentication routes
+│   ├── dashboard/         # Protected dashboard routes
+│   └── api/               # API routes
 ├── components/            # Reusable components
-│   ├── ui/               # Shadcn/ui components
-│   ├── layout/           # Layout components
-│   │   ├── Header.jsx    # Main header with chamber selector
-│   │   ├── Sidebar.jsx   # Navigation sidebar
-│   │   └── ChamberSelector.jsx # Chamber switching
+│   ├── ui/               # shadcn/ui components
 │   ├── forms/            # Form components
-│   │   ├── PatientConsultationForm.jsx # Main form
-│   │   ├── PatientDetailsForm.jsx      # Patient tab
-│   │   ├── ConsultationDetailsForm.jsx # Consultation tab
-│   │   ├── PrescriptionForm.jsx        # Prescription tab
-│   │   ├── HabitForm.jsx              # Habits tab
-│   │   └── FormActions.jsx            # Form actions
-│   ├── patients/         # Patient-specific components
-│   ├── common/           # Common components
-│   └── landing/          # Landing page components
-├── lib/                   # Utilities and configurations
-├── services/             # Appwrite service functions
+│   ├── layout/           # Layout components
+│   └── common/           # Common components
 ├── hooks/                # Custom React hooks
+├── lib/                  # Utility libraries
+├── services/             # API services
 ├── store/                # Zustand stores
-│   ├── chamberStore.js   # Chamber state management
-│   ├── medicineStore.js  # Medicine state
-│   └── instructionStore.js # Instruction state
 ├── schemas/              # Zod validation schemas
-│   └── patientConsultation.schema.js
-├── providers/            # Context providers
-├── constants/            # App constants
 └── styles/               # Global styles
 \`\`\`
 
-## 🔐 Security Features
+### Key Commands
+\`\`\`bash
+# Development
+npm run dev
 
-- Google OAuth secure authentication
-- Role-based access control
-- Data encryption
-- Session management
-- CORS protection
-- Input validation and sanitization
-- Secure API endpoints
-- Secure file upload with type validation
+# Build
+npm run build
 
-## 📈 Performance Optimizations
+# Start production server
+npm start
 
-- React Query data caching and synchronization
-- Debounced search inputs
-- Lazy loading components
-- Image optimization
-- Code splitting
-- Bundle optimization
-- Infinite scroll for large datasets
-- Optimistic updates
+# Lint
+npm run lint
 
-## 🌐 Browser Support
+# Type check
+npm run type-check
+\`\`\`
 
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+### Environment Setup
+- **Development**: `npm run dev`
+- **Production**: `npm run build && npm start`
+- **Testing**: `npm run test`
 
-## 📱 Mobile Responsiveness
+## 🚀 Deployment
 
-- Mobile-first approach
-- Touch-friendly interface
-- Responsive tables and forms
-- Optimized for tablets and phones
-- Progressive Web App capabilities
+### Vercel Deployment (Recommended)
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
-## 🎯 Key Features Highlights
+### Manual Deployment
+1. Build the application: `npm run build`
+2. Upload build files to your hosting provider
+3. Configure environment variables on the server
+4. Start the application: `npm start`
 
-### Professional Dashboard
-- Sticky header with breadcrumbs
-- Collapsible sidebar with chamber switching
-- Real-time notifications
-- Command palette for quick navigation
-- Professional theme switching
+## 🔒 Security Considerations
 
-### Advanced Patient Management
-- Comprehensive patient profiles
-- Consultation history with TanStack Table
-- Patient habits tracking and trends
-- Timeline view of patient interactions
-- Professional patient cards
+- **Environment Variables**: Never commit `.env` files to version control
+- **API Keys**: Use Appwrite's built-in security features
+- **User Authentication**: Implement proper session management
+- **Data Validation**: Use Zod schemas for all form inputs
+- **CORS Configuration**: Configure Appwrite CORS settings properly
 
-### Intelligent Search & Filtering
-- Debounced search inputs
-- Advanced filtering options
-- Real-time search results
-- Professional search UI
+## 🐛 Troubleshooting
 
-### Business-Class Forms
-- Multi-tab form interfaces
-- Voice input integration
-- Professional validation
-- Optimistic updates
-- Auto-save capabilities
+### Common Issues
 
-## 📞 Support & Documentation
+1. **Appwrite Connection Issues**
+   - Verify endpoint URL and project ID
+   - Check network connectivity
+   - Ensure API keys are correct
 
-### Help Resources
-- In-app help center
-- Video tutorials
-- FAQ section
-- Professional documentation
+2. **Authentication Problems**
+   - Verify Google OAuth configuration
+   - Check redirect URLs
+   - Ensure user has proper labels/roles
 
-### Contact
-- Email: support@popularhomeocare.com
-- Phone: +880 1712-345678
-- Website: https://popularhomeocare.com
+3. **Form Submission Errors**
+   - Check Zod schema validation
+   - Verify collection permissions
+   - Review browser console for errors
+
+4. **Voice Input Not Working**
+   - Ensure HTTPS connection (required for speech recognition)
+   - Check browser permissions for microphone access
+   - Verify browser compatibility
+
+## 📈 Performance Optimization
+
+- **Code Splitting**: Automatic with Next.js App Router
+- **Image Optimization**: Use Next.js Image component
+- **Caching**: Implement React Query caching strategies
+- **Bundle Analysis**: Use `@next/bundle-analyzer`
+- **Database Optimization**: Proper indexing in Appwrite
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Next.js Team** - For the amazing React framework
+- **Appwrite Team** - For the excellent Backend-as-a-Service platform
+- **shadcn** - For the beautiful UI component library
+- **Vercel** - For the seamless deployment platform
+
+## 📞 Support
+
+For support and questions:
+- 📧 Email: support@homeopathyclinic.com
+- 💬 Discord: [Join our community](https://discord.gg/homeopathyclinic)
+- 📖 Documentation: [docs.homeopathyclinic.com](https://docs.homeopathyclinic.com)
 
 ---
 
-**Popular Homeo Care** - A complete solution for modern homeopathic clinic management with professional UI/UX, advanced features, and business-class architecture.
+**Built with ❤️ for the homeopathy community**
+\`\`\`
 
-### Ready for Production
-
-This system is **production-ready** with:
-- ✅ Professional UI/UX design
-- ✅ Complete form submission functionality
-- ✅ Advanced data management with caching
-- ✅ Multi-chamber support with active chamber selection
-- ✅ Voice input integration for Bengali language
-- ✅ Comprehensive patient management system
-- ✅ Advanced consultation tracking with habits
-- ✅ Professional prescription management with QR codes
-- ✅ Business-class architecture and performance optimization
-
-**Start managing your homeopathic practice with confidence!** 🏥✨
+Now let me create the enhanced landing page components:
