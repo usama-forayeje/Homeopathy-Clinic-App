@@ -332,7 +332,7 @@ export function ConsultationDetailsForm({ onNextTab, onPreviousTab, chambers }) 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Chief Complaints (Array Input) */}
           <TagInput
-            name="consultationDetails.chiefComplaints"
+            name="consultationDetails.chiefComplaint"
             label="Chief Complaints"
             control={control}
             placeholder="Add chief complaint"

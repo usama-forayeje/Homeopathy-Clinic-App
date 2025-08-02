@@ -8,7 +8,7 @@ export const consultationSchema = z.object({
     (val) => (val === "" ? undefined : Number(val)),
     z.number().min(0, "Bill amount cannot be negative.").optional().nullable().default(0)
   ),
-  chiefComplaints: z.array(z.string()).default([]),
+  chiefComplaint: z.array(z.string()).default([]),
   symptoms: z.string().optional().default(""),
   BP: z.string().optional().default(""),
   Pulse: z.string().optional().default(""),
