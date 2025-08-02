@@ -18,12 +18,12 @@ import { useFormStores } from "@/hooks/useFormStores";
 
 // Form Sections and Schemas
 import { PatientDetailsForm } from "@/components/patients/PatientDetailsForm";
-import { ConsultationDetailsForm } from "@/components/forms/ConsultationDetailsForm";
 import { useParams } from "next/navigation";
 import { useConsultationForm, useCreateConsultation } from "@/hooks/usePatientConsultations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fullFormSchema } from "@/schemas/fullFormSchema";
 import { toast } from "sonner";
+import { ConsultationDetailsForm } from "@/components/forms/ConsultationDetailsForm";
 
 
 
@@ -37,7 +37,7 @@ export default function NewConsultationPage() {
   const initialDefaultValues = useMemo(() => ({
     patientDetails: {
       name: "",
-      age: undefined,
+      age: 0,
       address: "",
       phoneNumber: "",
       occupation: "",
@@ -154,59 +154,66 @@ export default function NewConsultationPage() {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log("Form submitted. Full Data:", data);
-    console.log("Is existing patient ID present?", !!existingPatientId);
+  console.log("Form submitted. Full Data:", data);
+  console.log("Is existing patient ID present?", !!existingPatientId);
 
-    if (!existingPatientId) {
-      // নতুন রোগী এবং প্রথম কনসালটেশন তৈরি করুন
-      console.log("Attempting to create new patient and first consultation.");
-      await createCombinedMutation.mutateAsync(data); // পুরো 'data' অবজেক্ট পাঠান
-      toast.success("New patient and first consultation successfully created!");
-      console.log("New patient and consultation creation initiated.");
-      form.reset(initialDefaultValues); // সফল হলে ফর্ম রিসেট
+  if (!existingPatientId) {
+    // নতুন রোগীর জন্য ডেটা প্রস্তুত করা
+    const dataForNewPatient = {
+      ...data,
+      consultationDetails: {
+        ...data.consultationDetails,
+        // TagInput থেকে আসা অবজেক্ট অ্যারে থেকে শুধু value বের করে স্ট্রিং অ্যারে তৈরি করুন
+        chiefComplaint: data.consultationDetails.chiefComplaint.map(item => item.value),
+        otherComplaints: data.consultationDetails.otherComplaints.map(item => item.value),
+        diagnosis: data.consultationDetails.diagnosis.map(item => item.value),
+      }
+      // অন্যান্য ডেটা যেমন আছে তেমন থাকবে
+    };
+    await createCombinedMutation.mutateAsync(dataForNewPatient); // <--- পরিবর্তিত ডেটা পাঠান
+    console.log("New patient and consultation creation initiated.");
+    form.reset(initialDefaultValues);
+    setCurrentTab("patient");
+    setCompletedTabs(new Set());
+  } else {
+    try {
+      // বিদ্যমান রোগীর জন্য ডেটা প্রস্তুত করা
+      const consultationDataForExistingPatient = {
+        ...data.consultationDetails,
+        patientId: existingPatientId,
+        // TagInput থেকে আসা অবজেক্ট অ্যারে থেকে শুধু value বের করে স্ট্রিং অ্যারে তৈরি করুন
+        chiefComplaint: data.consultationDetails.chiefComplaint.map(item => item.value),
+        otherComplaints: data.consultationDetails.otherComplaints.map(item => item.value),
+        diagnosis: data.consultationDetails.diagnosis.map(item => item.value),
+        // ... অন্যান্য ডেটা
+        prescriptions: data.prescription?.medicines?.map(med => ({
+          name: med.name,
+          dosage: med.dosage || "",
+        })) || [],
+        dosageInstructions: data.prescription?.dosageInstructions || [],
+        prescriptionNotes: data.prescription?.prescriptionNotes || "",
+        personalHistory: data.habitsAndHistory?.personalHistory || "",
+        familyHistory: data.habitsAndHistory?.familyHistory || "",
+        allergies: data.habitsAndHistory?.allergies || "",
+        pastMedicalHistory: data.habitsAndHistory?.pastMedicalHistory || "",
+        drugHistory: data.habitsAndHistory?.drugHistory || "",
+        smokingHistory: data.habitsAndHistory?.smokingHistory || "",
+        alcoholHistory: data.habitsAndHistory?.alcoholHistory || "",
+        dietAndLifestyleAdvice: data.consultationDetails.advice ? [data.consultationDetails.advice] : [],
+      };
+      delete consultationDataForExistingPatient.advice;
+
+      await createConsultationForExistingPatient(consultationDataForExistingPatient);
+      toast.success("New consultation for existing patient successfully added!");
+      form.reset(initialDefaultValues);
       setCurrentTab("patient");
       setCompletedTabs(new Set());
-    } else {
-      // বিদ্যমান রোগীর জন্য নতুন কনসালটেশন তৈরি করুন
-      console.log("Attempting to create new consultation for existing patient.");
-      try {
-        // এখানে শুধু consultationDetails, prescription, habitsAndHistory ডেটা ব্যবহার করুন
-        // কারণ patientDetails পরিবর্তিত হবে না
-        const consultationDataForExistingPatient = {
-          ...data.consultationDetails,
-          patientId: existingPatientId, // রোগীর আইডি প্যারাম থেকে নেওয়া হয়েছে
-          // prescription এবং habitsAndHistory এর ডেটা এখানে যোগ করুন
-          prescriptions: data.prescription?.medicines?.map(med => ({
-            name: med.name,
-            dosage: med.dosage || "",
-          })) || [],
-          dosageInstructions: data.prescription?.dosageInstructions || [],
-          prescriptionNotes: data.prescription?.prescriptionNotes || "",
-          personalHistory: data.habitsAndHistory?.personalHistory || "",
-          familyHistory: data.habitsAndHistory?.familyHistory || "",
-          allergies: data.habitsAndHistory?.allergies || "",
-          pastMedicalHistory: data.habitsAndHistory?.pastMedicalHistory || "",
-          drugHistory: data.habitsAndHistory?.drugHistory || "",
-          smokingHistory: data.habitsAndHistory?.smokingHistory || "",
-          alcoholHistory: data.habitsAndHistory?.alcoholHistory || "",
-          dietAndLifestyleAdvice: data.consultationDetails.advice ? [data.consultationDetails.advice] : [],
-        };
-        // অপ্রয়োজনীয় `advice` ফিল্ড মুছে ফেলুন
-        delete consultationDataForExistingPatient.advice;
-        // console.log("Final consultation data for existing patient:", consultationDataForExistingPatient);
-
-        await createConsultationForExistingPatient(consultationDataForExistingPatient);
-        toast.success("New consultation for existing patient successfully added!");
-        console.log("New consultation for existing patient creation initiated.");
-        form.reset(initialDefaultValues); // সফল হলে ফর্ম রিসেট
-        setCurrentTab("patient");
-        setCompletedTabs(new Set());
-      } catch (error) {
-        console.error("Error caught during consultation creation for existing patient:", error);
-        toast.error(error.message || "Failed to add new consultation for existing patient.");
-      }
+    } catch (error) {
+      console.error("Error caught during consultation creation for existing patient:", error);
+      toast.error(error.message || "Failed to add new consultation for existing patient.");
     }
-  };
+  }
+};
 
   if (isFormLoading || isPatientDataLoading) {
     return (

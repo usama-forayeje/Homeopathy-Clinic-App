@@ -86,7 +86,6 @@ export const useConsultationForm = () => {
       queryClient.invalidateQueries(['consultations']);
       // যদি habits collection থাকে, তাহলে সেটিও invalidate করুন
       queryClient.invalidateQueries(['patientHabits']);
-      toast.success("নতুন রোগী এবং কনসালটেশন সফলভাবে তৈরি হয়েছে!");
       console.log("useConsultationForm: Combined mutation সফল:", data);
     },
     onError: (error) => {
