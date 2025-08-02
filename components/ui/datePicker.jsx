@@ -1,47 +1,52 @@
-// components/ui/date-picker.jsx
-"use client";
 
-import * as React from "react";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+"use client"
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import * as React from "react"
+import { ChevronDownIcon } from "lucide-react"
+import { format } from "date-fns"
 
-// এই উপাদানটি এখন একটি কাস্টম ইনপুট হিসাবে কাজ করবে, নিজস্ব ফর্ম বা onSubmit ফাংশন থাকবে না।
-export function DatePicker({ value, onSelect, placeholder = "Select a date", disabled }) {
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+export function Calendar22({ value, onChange, placeholder = "Select date", disabled }) {
+  const [open, setOpen] = React.useState(false)
+
+  const selectedDate = value ? new Date(value) : undefined;
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-[240px] pl-3 text-left font-normal",
-            !value && "text-muted-foreground"
-          )}
-          disabled={disabled}
-        >
-          {value ? format(new Date(value), "PPP") : <span>{placeholder}</span>}
-          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={value ? new Date(value) : undefined}
-          onSelect={(date) => {
-            // date-fns Calendar onSelect returns a Date object or undefined
-            // We convert it to ISO string for consistency, or null if no date selected
-            onSelect(date ? date.toISOString() : null);
-          }}
-          disabled={disabled}
-          captionLayout="dropdown" // Add dropdowns for month/year selection
-          fromYear={1900} // Set a reasonable start year for DOB
-          toYear={new Date().getFullYear()} // Current year as end year
-        />
-      </PopoverContent>
-    </Popover>
-  );
+    <div className="flex flex-col gap-3">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            id="dob-date-picker"
+            className="w-48 justify-between font-normal cursor-pointer"
+            disabled={disabled}
+          >
+            {selectedDate ? format(selectedDate, "PPP") : <span>{placeholder}</span>}
+            <ChevronDownIcon />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            captionLayout="dropdown"
+            onSelect={(date) => {
+              onChange(date ? date.toISOString() : null);
+              setOpen(false)
+            }}
+            disabled={disabled}
+            fromYear={1900}
+            toYear={new Date().getFullYear()}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
 }

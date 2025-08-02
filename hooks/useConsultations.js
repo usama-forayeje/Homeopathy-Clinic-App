@@ -19,10 +19,6 @@ export const consultationKeys = {
   analytics: () => [...consultationKeys.all, "analytics"],
 }
 
-// ========================================== Core Query Hooks ==========================================
-/**
- * Get single consultation with enhanced error handling and retry logic
- */
 export function useConsultation(consultationId, options = {}) {
   return useQuery({
     queryKey: consultationKeys.detail(consultationId),
@@ -290,9 +286,6 @@ export function useDeleteConsultation(options = {}) {
   })
 }
 
-/**
- * Form integration hook - specifically for consultation forms
- */
 export function useConsultationForm(defaultData = null, options = {}) {
   const createMutation = useCreatePatientConsultation()
   const updateMutation = useUpdateConsultation()

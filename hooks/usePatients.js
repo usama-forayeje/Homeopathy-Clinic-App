@@ -2,6 +2,7 @@
 
 import patientsService from "@/services/patients"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 export function usePatients(searchTerm = "", limit = 25, offset = 0) {
   return useQuery({
@@ -34,7 +35,7 @@ export function useCreatePatient() {
     mutationFn: patientsService.createPatient,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patients"] })
-      toast.onSuccess("Patient created successfully.")
+      toast.success("Patient created successfully.")
     },
     onError: (error) => {
       toast.error(`Failed to create patient: ${error.message}`)

@@ -12,11 +12,37 @@ import { Badge } from "@/components/ui/badge"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Activity, CheckCircle2, Plus, X, ArrowLeft } from "lucide-react"
-import { VoiceInput } from "../common/VoiceInput"
+import { VoiceInput } from "@/components/common/VoiceInput"
 
-export function HabitForm({ onPreviousTab, habitDefinitions }) {
+/**
+ * Habits Section Component
+ *
+ * This section handles:
+ * - Selection of habit definitions from available options
+ * - Recording habit values based on input type (text, number, select, boolean, scale)
+ * - Adding notes for each habit
+ * - Dynamic management of selected habits
+ *
+ * Key Features:
+ * - Visual habit selection interface
+ * - Dynamic input types based on habit definition
+ * - Habit completion tracking
+ * - Voice input support for text fields
+ *
+ * @param {Object} props - Component props
+ * @param {Function} onPreviousTab - Function to navigate to previous tab
+ * @param {Array} habitDefinitions - Available habit definitions from store
+ */
+export function HabitsSection({ onPreviousTab, habitDefinitions }) {
   const form = useFormContext()
 
+  console.log("🏃 HabitsSection: Component rendered")
+  console.log("📊 Available habit definitions:", habitDefinitions?.length || 0)
+
+  // ========================================== DYNAMIC ARRAYS ==========================================
+  /**
+   * Patient Habits - Dynamic array management
+   */
   const {
     fields: habitFields,
     append: appendHabit,
@@ -26,6 +52,7 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
     name: "patientHabits",
   })
 
+  // ========================================== RENDER ==========================================
   return (
     <Card className="border-0 shadow-lg">
       <CardHeader className="pb-6">
@@ -37,8 +64,9 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
         </CardTitle>
         <CardDescription>Track lifestyle habits and health patterns</CardDescription>
       </CardHeader>
+
       <CardContent className="space-y-8">
-        {/* Available Habits */}
+        {/* ========================================== AVAILABLE HABITS ========================================== */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Available Habits</h3>
           <ScrollArea className="h-[300px] w-full rounded-lg border p-4">
@@ -82,7 +110,14 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                         className="w-8 h-8 ml-2 flex-shrink-0"
                         onClick={() => {
                           if (!isSelected) {
-                            appendHabit({ habitDefinitionId: habitDef.$id, value: "", notes: "" })
+                            appendHabit({
+                              habitDefinitionId: habitDef.$id,
+                              value: "",
+                              notes: "",
+                              patientId: form.getValues("patientDetails.patientId"),
+                              recordedDate: new Date().toISOString(),
+                            })
+                            console.log(`➕ Added habit: ${habitDef.name}`)
                           }
                         }}
                         disabled={isSelected}
@@ -99,10 +134,9 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
 
         <Separator />
 
-        {/* Selected Habits */}
+        {/* ========================================== SELECTED HABITS ========================================== */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Selected Habits ({habitFields.length})</h3>
-
           {habitFields.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -133,7 +167,10 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        onClick={() => removeHabit(index)}
+                        onClick={() => {
+                          removeHabit(index)
+                          console.log(`➖ Removed habit: ${selectedHabitDef?.name}`)
+                        }}
                         className="w-8 h-8 text-red-500 hover:text-red-700 hover:bg-red-50"
                       >
                         <X className="h-4 w-4" />
@@ -141,7 +178,7 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                     </div>
 
                     <div className="space-y-4">
-                      {/* Value Field */}
+                      {/* ========================================== VALUE FIELD ========================================== */}
                       <FormField
                         control={form.control}
                         name={`patientHabits.${index}.value`}
@@ -159,11 +196,13 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                                 />
                               )
                               break
+
                             case "number":
                               InputComponent = (
                                 <Input type="number" placeholder="Enter number" className="h-11" {...valueField} />
                               )
                               break
+
                             case "select":
                               InputComponent = (
                                 <Select onValueChange={valueField.onChange} value={valueField.value}>
@@ -180,6 +219,7 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                                 </Select>
                               )
                               break
+
                             case "boolean":
                               InputComponent = (
                                 <Select onValueChange={valueField.onChange} value={valueField.value}>
@@ -203,6 +243,7 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                                 </Select>
                               )
                               break
+
                             case "scale":
                               InputComponent = (
                                 <Select onValueChange={valueField.onChange} value={valueField.value}>
@@ -226,6 +267,7 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                                 </Select>
                               )
                               break
+
                             default:
                               InputComponent = <Input placeholder="Enter value" className="h-11" {...valueField} />
                           }
@@ -240,7 +282,7 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
                         }}
                       />
 
-                      {/* Notes Field */}
+                      {/* ========================================== NOTES FIELD ========================================== */}
                       <FormField
                         control={form.control}
                         name={`patientHabits.${index}.notes`}
@@ -267,9 +309,16 @@ export function HabitForm({ onPreviousTab, habitDefinitions }) {
           )}
         </div>
 
-        {/* Navigation */}
+        {/* ========================================== NAVIGATION ========================================== */}
         <div className="flex justify-between pt-4">
-          <Button type="button" variant="outline" onClick={() => onPreviousTab("prescription")}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              console.log("⬅️ Navigating back to prescription tab")
+              onPreviousTab("prescription")
+            }}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>

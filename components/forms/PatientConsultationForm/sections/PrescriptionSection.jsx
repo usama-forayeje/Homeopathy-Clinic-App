@@ -1,4 +1,5 @@
 "use client"
+
 import { useFormContext, useFieldArray } from "react-hook-form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -8,11 +9,40 @@ import { Separator } from "@/components/ui/separator"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ArrowRight, Plus, Minus, Pill } from "lucide-react"
-import { VoiceInput } from "../common/VoiceInput"
+import { VoiceInput } from "@/components/common/VoiceInput"
 
-export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instructions }) {
+/**
+ * Prescription Section Component
+ *
+ * This section handles:
+ * - Medicine prescriptions with dosage
+ * - Dosage instructions (predefined and custom)
+ * - Diet and lifestyle advice
+ * - Prescription notes
+ *
+ * Key Features:
+ * - Dynamic arrays for prescriptions, instructions, and advice
+ * - Medicine selection from available medicines
+ * - Instruction selection from predefined options or custom input
+ * - Voice input support for text fields
+ *
+ * @param {Object} props - Component props
+ * @param {Function} onNextTab - Function to navigate to next tab
+ * @param {Function} onPreviousTab - Function to navigate to previous tab
+ * @param {Array} medicines - Available medicines from store
+ * @param {Array} instructions - Available instructions from store
+ */
+export function PrescriptionSection({ onNextTab, onPreviousTab, medicines, instructions }) {
   const form = useFormContext()
 
+  console.log("💊 PrescriptionSection: Component rendered")
+  console.log("💊 Available medicines:", medicines?.length || 0)
+  console.log("📋 Available instructions:", instructions?.length || 0)
+
+  // ========================================== DYNAMIC ARRAYS ==========================================
+  /**
+   * Prescriptions - Dynamic array management
+   */
   const {
     fields: prescriptionFields,
     append: appendPrescription,
@@ -22,6 +52,9 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
     name: "consultationDetails.prescriptions",
   })
 
+  /**
+   * Dosage Instructions - Dynamic array management
+   */
   const {
     fields: instructionFields,
     append: appendInstruction,
@@ -31,6 +64,9 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
     name: "consultationDetails.dosageInstructions",
   })
 
+  /**
+   * Diet & Lifestyle Advice - Dynamic array management
+   */
   const {
     fields: adviceFields,
     append: appendAdvice,
@@ -40,6 +76,7 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
     name: "consultationDetails.dietAndLifestyleAdvice",
   })
 
+  // ========================================== RENDER ==========================================
   return (
     <Card className="border-0 shadow-lg">
       <CardHeader className="pb-6">
@@ -51,8 +88,9 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
         </CardTitle>
         <CardDescription>Medicine prescriptions and treatment instructions</CardDescription>
       </CardHeader>
+
       <CardContent className="space-y-8">
-        {/* Medicines */}
+        {/* ========================================== MEDICINES ========================================== */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Prescribed Medicines</h3>
@@ -60,7 +98,10 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => appendPrescription({ medicineId: "", dosage: "", notes: "" })}
+              onClick={() => {
+                appendPrescription({ medicineId: "", dosage: "", notes: "" })
+                console.log("➕ Added new prescription field")
+              }}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Medicine
@@ -79,19 +120,34 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
                 <Card key={fieldItem.id} className="p-4 border-l-4 border-l-purple-500">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-medium">Medicine {index + 1}</h4>
-                    <Button type="button" variant="outline" size="sm" onClick={() => removePrescription(index)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        removePrescription(index)
+                        console.log(`➖ Removed prescription ${index + 1}`)
+                      }}
+                    >
                       <Minus className="h-4 w-4 mr-2" />
                       Remove
                     </Button>
                   </div>
                   <div className="space-y-4">
+                    {/* Medicine Selection */}
                     <FormField
                       control={form.control}
                       name={`consultationDetails.prescriptions.${index}.medicineId`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Select Medicine</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(value)
+                              console.log(`💊 Selected medicine ID for prescription ${index + 1}:`, value)
+                            }}
+                            value={field.value || ""}
+                          >
                             <FormControl>
                               <SelectTrigger className="h-11">
                                 <SelectValue placeholder="Choose medicine" />
@@ -115,6 +171,7 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
                       )}
                     />
 
+                    {/* Dosage */}
                     <FormField
                       control={form.control}
                       name={`consultationDetails.prescriptions.${index}.dosage`}
@@ -129,6 +186,7 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
                       )}
                     />
 
+                    {/* Notes */}
                     <FormField
                       control={form.control}
                       name={`consultationDetails.prescriptions.${index}.notes`}
@@ -155,11 +213,19 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
 
         <Separator />
 
-        {/* Dosage Instructions */}
+        {/* ========================================== DOSAGE INSTRUCTIONS ========================================== */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Dosage Instructions</h3>
-            <Button type="button" variant="outline" size="sm" onClick={() => appendInstruction("")}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                appendInstruction("")
+                console.log("➕ Added new instruction field")
+              }}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add Instruction
             </Button>
@@ -174,7 +240,13 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
                     <FormItem className="flex-1">
                       <FormControl>
                         <div className="flex gap-3">
-                          <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(value)
+                              console.log(`📋 Selected instruction ${index + 1}:`, value)
+                            }}
+                            value={field.value || ""}
+                          >
                             <SelectTrigger className="h-11">
                               <SelectValue placeholder="Select instruction" />
                             </SelectTrigger>
@@ -198,7 +270,15 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
                     </FormItem>
                   )}
                 />
-                <Button type="button" variant="outline" size="icon" onClick={() => removeInstruction(index)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    removeInstruction(index)
+                    console.log(`➖ Removed instruction ${index + 1}`)
+                  }}
+                >
                   <Minus className="h-4 w-4" />
                 </Button>
               </div>
@@ -208,11 +288,19 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
 
         <Separator />
 
-        {/* Diet & Lifestyle Advice */}
+        {/* ========================================== DIET & LIFESTYLE ADVICE ========================================== */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Diet & Lifestyle Advice</h3>
-            <Button type="button" variant="outline" size="sm" onClick={() => appendAdvice("")}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                appendAdvice("")
+                console.log("➕ Added new advice field")
+              }}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add Advice
             </Button>
@@ -237,7 +325,15 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
                     </FormItem>
                   )}
                 />
-                <Button type="button" variant="outline" size="icon" onClick={() => removeAdvice(index)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    removeAdvice(index)
+                    console.log(`➖ Removed advice ${index + 1}`)
+                  }}
+                >
                   <Minus className="h-4 w-4" />
                 </Button>
               </div>
@@ -245,6 +341,7 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
           </div>
         </div>
 
+        {/* Prescription Notes */}
         <FormField
           control={form.control}
           name="consultationDetails.prescriptionNotes"
@@ -264,13 +361,26 @@ export function PrescriptionForm({ onNextTab, onPreviousTab, medicines, instruct
           )}
         />
 
-        {/* Navigation */}
+        {/* ========================================== NAVIGATION ========================================== */}
         <div className="flex justify-between pt-4">
-          <Button type="button" variant="outline" onClick={() => onPreviousTab("consultation")}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              console.log("⬅️ Navigating back to consultation tab")
+              onPreviousTab("consultation")
+            }}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
-          <Button type="button" onClick={() => onNextTab("habits")}>
+          <Button
+            type="button"
+            onClick={() => {
+              console.log("➡️ Navigating to habits tab")
+              onNextTab("habits")
+            }}
+          >
             Next: Habits
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

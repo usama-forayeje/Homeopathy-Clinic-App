@@ -12,6 +12,15 @@ if (!DATABASE_ID || !PATIENTS_COLLECTION_ID) {
 }
 
 const patientsService = {
+  async createPatient(patientData) {
+    try {
+      const response = await databases.createDocument(DATABASE_ID, PATIENTS_COLLECTION_ID, ID.unique(), patientData)
+      return response
+    } catch (error) {
+      console.error("Failed to create patient:", error)
+      throw new Error(`Failed to create patient record: ${error.message || error}`)
+    }
+  },
 
   async getAllPatients() {
     try {
@@ -22,16 +31,6 @@ const patientsService = {
     } catch (error) {
       console.error("Failed to fetch all patients:", error)
       throw new Error(`Failed to retrieve all patients: ${error.message || error}`)
-    }
-  },
-
-  async createPatient(patientData) {
-    try {
-      const response = await databases.createDocument(DATABASE_ID, PATIENTS_COLLECTION_ID, ID.unique(), patientData)
-      return response
-    } catch (error) {
-      console.error("Failed to create patient:", error)
-      throw new Error(`Failed to create patient record: ${error.message || error}`)
     }
   },
 

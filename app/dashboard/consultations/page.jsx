@@ -37,6 +37,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useConsultations } from "@/hooks/useConsultations"
 
 export default function ConsultationsPage() {
+  // ✅ All hooks are declared and called unconditionally at the very top of the component.
+  // React needs to see these in the same order on every render.
   const [sorting, setSorting] = useState([])
   const [globalFilter, setGlobalFilter] = useState("")
   const [pagination, setPagination] = useState({
@@ -44,7 +46,7 @@ export default function ConsultationsPage() {
     pageSize: 10,
   })
 
-  // Fetch consultations
+  // Hook for fetching data
   const {
     data: consultationsData,
     isLoading,
@@ -57,7 +59,7 @@ export default function ConsultationsPage() {
   const consultations = consultationsData?.documents || []
   const totalConsultations = consultationsData?.total || 0
 
-  // Enhanced statistics
+  // Memoized stats calculation
   const stats = useMemo(() => {
     const total = totalConsultations
     const today = consultations.filter((c) => {
@@ -81,7 +83,7 @@ export default function ConsultationsPage() {
     return { total, today, thisWeek, avgBill }
   }, [consultations, totalConsultations])
 
-  // Enhanced columns
+  // Memoized column definitions for react-table
   const columns = useMemo(
     () => [
       {
@@ -209,6 +211,7 @@ export default function ConsultationsPage() {
     [],
   )
 
+  // useReactTable hook
   const table = useReactTable({
     data: consultations,
     columns,
@@ -228,6 +231,7 @@ export default function ConsultationsPage() {
     pageCount: Math.ceil(totalConsultations / pagination.pageSize),
   })
 
+  // ✅ Now, handle conditional rendering *after* all hooks have been called.
   if (isLoading) {
     return (
       <PageContainer>

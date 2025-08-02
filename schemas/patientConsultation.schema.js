@@ -22,9 +22,7 @@ export const patientConsultationSchema = z.object({
     consultationDate: z.string().min(1, "Consultation date is required"), // datetime
     chamberId: z.string().min(1, "Please select a chamber"),
     patientId: z.string().optional(), // Will be set automatically
-    chiefComplaint: z
-      .array(z.string().min(1, "Complaint cannot be empty"))
-      .min(1, "At least one chief complaint is required"),
+    chiefComplaint: z.array(z.string()).optional(),
     symptoms: z.string().optional(),
     BP: z.string().optional(),
     Pulse: z.string().optional(),
@@ -67,3 +65,4 @@ export const patientConsultationSchema = z.object({
 export const patientDetailsSchema = patientConsultationSchema.shape.patientDetails
 export const consultationDetailsSchema = patientConsultationSchema.shape.consultationDetails
 export const patientHabitsSchema = patientConsultationSchema.shape.patientHabits
+

@@ -1,6 +1,5 @@
 "use client"
 
-import { PatientConsultationForm } from "@/components/forms/PatientConsultationForm"
 import { useRouter } from "next/navigation"
 import { PageContainer } from "@/components/common/PageContainer"
 import { ArrowLeft, UserPlus, Stethoscope } from "lucide-react"
@@ -10,6 +9,7 @@ import Link from "next/link"
 import { Suspense } from "react"
 import { LoadingSpinner } from "@/components/common/LoadingSpinner"
 import { useCreatePatientConsultation } from "@/hooks/useConsultations"
+import { PatientConsultationForm } from "@/components/forms"
 
 function NewConsultationContent() {
   const router = useRouter()
